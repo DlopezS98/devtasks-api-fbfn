@@ -9,3 +9,5 @@ typings/
 node_modules/
 *.local
 *.log
+.env
+*serviceaccount.json
