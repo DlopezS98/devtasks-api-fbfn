@@ -1,4 +1,8 @@
 import app from "./app";
+import FirebaseConfig from "./firebase.config";
+
+// Initialize Firebase app
+FirebaseConfig.initializeApp();
 
 const PORT = process.env.PORT || 3000;
 
