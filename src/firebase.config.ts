@@ -11,7 +11,7 @@ export default class FirebaseConfig {
 
   // eslint-disable-next-line require-jsdoc
   private constructor() {
-    this.fbApp = admin.initializeApp({ credential: admin.credential.applicationDefault() }, "DevTasksApp");
+    this.fbApp = admin.initializeApp({ credential: admin.credential.applicationDefault() }, "DevTasksApi");
   }
 
   /**
