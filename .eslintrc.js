@@ -31,5 +31,6 @@ module.exports = {
     "indent": ["error", 2],
     "space-before-blocks": ["error", "always"],
     "object-curly-spacing": ["error", "always"],
+    "max-len": ["error", { "code": 120 }],
   },
 };
