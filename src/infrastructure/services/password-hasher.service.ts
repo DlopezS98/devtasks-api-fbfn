@@ -1,6 +1,7 @@
 /* eslint-disable require-jsdoc */
-import { IPasswordHasherService } from "@Application/abstractions/ipassword-hasher.service";
 import * as crypto from "crypto";
+
+import { IPasswordHasherService } from "@Application/abstractions/ipassword-hasher.service";
 
 export default class PasswordHasherService implements IPasswordHasherService {
   private static readonly Iterations = 100_000;
