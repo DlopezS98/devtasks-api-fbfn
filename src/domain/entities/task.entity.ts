@@ -2,7 +2,7 @@
 
 import TaskStatus from "../value-objects/task-status";
 import BaseEntity from "./base-entity";
-import TaskLabel from "./task-label";
+import TaskLabel from "./task-label.entity";
 
 export interface ITaskProps {
   id: string;
