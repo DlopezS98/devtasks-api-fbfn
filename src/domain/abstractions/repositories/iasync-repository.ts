@@ -6,8 +6,7 @@ export interface IAsyncRepository<TEntity extends BaseEntity> {
   getAsync(id: string): Promise<TEntity | null>;
   updateAsync(entity: TEntity): Promise<void>;
   updateAsync(entities: TEntity[]): Promise<void>;
-  deleteAsync(id: string): Promise<void>;
+  deleteAsync(entity: TEntity): Promise<void>;
   deleteAsync(entities: TEntity[]): Promise<void>;
   listAsync(): Promise<TEntity[]>;
-  saveChangesAsync(): Promise<number>;
 }
