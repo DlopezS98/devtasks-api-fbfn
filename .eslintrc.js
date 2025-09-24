@@ -32,5 +32,7 @@ module.exports = {
     "space-before-blocks": ["error", "always"],
     "object-curly-spacing": ["error", "always"],
     "max-len": ["error", { "code": 120 }],
+    "require-jsdoc": 0,
+    "import/order": ["error", { "newlines-between": "always" }],
   },
 };
