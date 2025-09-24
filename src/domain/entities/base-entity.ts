@@ -7,6 +7,10 @@ export interface IDomainEvent<TPayload = unknown> {
 }
 
 export default class BaseEntity {
+  public get namespace(): string {
+    return this.constructor.name.toLowerCase();
+  }
+
   constructor(public readonly id: string) {}
 
   private readonly _domainEvents: IDomainEvent[] = [];
