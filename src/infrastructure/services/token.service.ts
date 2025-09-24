@@ -11,7 +11,6 @@ export default class TokenService implements ITokenService {
 
   generateToken(user: User): [string, Date] {
     const secret = this.jwtOptions.signingKey;
-    const expiresIn = `${this.jwtOptions.accessTokenMinutes}Minutes` as jwt.SignOptions["expiresIn"];
     const iatInEpoch = Math.floor(Date.now() / 1000);
     const expirationDate = new Date(Date.now() + this.jwtOptions.accessTokenMinutes * 60 * 1000);
     const expInEpoch = Math.floor(expirationDate.getTime() / 1000);
@@ -28,9 +27,7 @@ export default class TokenService implements ITokenService {
       displayName: user.displayName,
     };
     const token = jwt.sign(claims, secret, {
-      expiresIn,
       algorithm,
-      issuer: this.jwtOptions.issuer,
       audience: this.jwtOptions.audience,
     });
 
