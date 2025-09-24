@@ -28,6 +28,10 @@ export default class RefreshToken extends BaseEntity implements IRefreshTokenPro
     return this.revokedAt !== null;
   }
 
+  get namespace(): string {
+    return "RefreshTokens";
+  }
+
   constructor(props: Omit<IRefreshTokenProps, "isRevoked">) {
     super(props.id);
     this.userId = props.userId;
