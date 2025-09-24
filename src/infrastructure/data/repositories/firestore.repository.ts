@@ -16,29 +16,26 @@ export default class FirestoreRepository<TEntity extends BaseEntity> implements 
     private readonly entityFactory: () => TEntity,
   ) {}
 
-  addAsync(entity: TEntity): Promise<TEntity>;
-  addAsync(entities: TEntity[]): Promise<TEntity[]>;
-  addAsync(entities: unknown): Promise<TEntity> | Promise<TEntity[]> {
+  async addAsync(entity: TEntity): Promise<TEntity>;
+  async addAsync(entities: TEntity[]): Promise<TEntity[]>;
+  async addAsync(entities: TEntity | TEntity[]): Promise<TEntity | TEntity[]> {
     if (Array.isArray(entities)) {
-      return this.addManyAsync(entities);
+      return this.addMany(entities);
     } else {
-      return this.addSingleAsync(entities as TEntity);
+      return this.addSingle(entities);
     }
   }
 
-  private async addSingleAsync(entity: TEntity): Promise<TEntity> {
+  private addSingle(entity: TEntity): TEntity {
     entity.id = this.collectionRef().doc().id;
     this.uow.set(this.collectionRef().doc(entity.id), entity);
     return entity;
   }
 
-  private async addManyAsync(entities: TEntity[]): Promise<TEntity[]> {
+  private addMany(entities: TEntity[]): TEntity[] {
     if (entities.length === 0) return [];
 
-    for (const entity of entities) {
-      entity.id = this.collectionRef().doc().id;
-      this.uow.set(this.collectionRef().doc(entity.id), entity);
-    }
+    entities.forEach(this.addSingle.bind(this));
     return entities;
   }
 
