@@ -7,7 +7,7 @@ import { TokenResDto } from "@Application/dtos/response/token.dto";
 import { UserResponseDto } from "@Application/dtos/response/user.dto";
 import { IUnitOfWork } from "@Domain/abstractions/repositories/iunit-of-work";
 import RefreshToken from "@Domain/entities/refresh-token.entity";
-import User from "@Domain/entities/user";
+import User from "@Domain/entities/user.entity";
 import DomainError, { ErrorCodes } from "@Domain/errors/domain-error";
 import EntityNotFoundError from "@Domain/errors/entity-not-found.error";
 import Email from "@Domain/value-objects/email";

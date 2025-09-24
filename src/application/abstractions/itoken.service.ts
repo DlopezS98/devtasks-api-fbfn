@@ -1,5 +1,5 @@
 import { GeneratedRefreshTokenDto } from "../dtos/response/refresh-token.dto";
-import User from "@Domain/entities/user";
+import User from "@Domain/entities/user.entity";
 
 export interface ITokenService {
   generateToken(user: User): [string, Date];
