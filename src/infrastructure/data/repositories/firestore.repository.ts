@@ -39,9 +39,12 @@ export default class FirestoreRepository<TEntity extends BaseEntity> implements 
     return entities;
   }
 
-  getAsync(id: string): Promise<TEntity | null> {
-    throw new Error("Method not implemented.");
+  async getAsync(id: string): Promise<TEntity | null> {
+    const ref = this.collectionRef().doc(id);
+    const doc = await ref.get();
+    return doc.exists ? doc.data() as TEntity : null;
   }
+
   updateAsync(entity: TEntity): Promise<void>;
   updateAsync(entities: TEntity[]): Promise<void>;
   updateAsync(entities: unknown): Promise<void> {
