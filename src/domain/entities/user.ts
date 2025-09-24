@@ -37,6 +37,17 @@ export default class User extends BaseEntity implements IUserProps {
     this.updatedAt = props.updatedAt;
   }
 
+  static create(props: Omit<IUserProps, "id" | "displayName" | "createdAt" | "updatedAt" | "isActive">): User {
+    return new User({
+      ...props,
+      id: "", // ID will be set by the repository
+      displayName: props.email.getValue().split("@")[0], // Default display name from email
+      createdAt: new Date(), // placeholder, should be set by the repository
+      updatedAt: null,
+      isActive: true,
+    });
+  }
+
   /**
    * Creates an empty User instance with default values.
    * @return {User} An empty User instance with default values.
