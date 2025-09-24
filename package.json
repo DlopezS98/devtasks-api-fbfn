@@ -1,7 +1,7 @@
 {
   "name": "functions",
   "scripts": {
-    "dev": "nodemon src/server.local.ts",
+    "dev": "nodemon src/api/startup.ts",
     "lint": "eslint --ext .js,.ts .",
     "build": "tsc",
     "build:watch": "tsc --watch",

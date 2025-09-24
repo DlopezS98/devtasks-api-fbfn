@@ -1,7 +1,12 @@
+/**
+ * Firebase Cloud Functions entry point.
+ * This file sets up the Express app and exports it as a Firebase Function.
+ */
+
 import { setGlobalOptions } from "firebase-functions";
 import { onRequest } from "firebase-functions/https";
-import app from "./app";
-import FirebaseConfig from "./firebase.config";
+import app from "./api/app";
+import FirebaseConfig from "./infrastructure/firebase.config";
 // import * as logger from "firebase-functions/logger";
 
 // Initialize Firebase app
