@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 
-import TaskStatus from "../value-objects/task-status";
+import TaskStatus, { TaskStatuses } from "../value-objects/task-status";
 import BaseEntity from "./base-entity";
 import TaskLabel from "./task-label.entity";
 
@@ -17,6 +17,10 @@ export interface ITaskProps {
 }
 
 export default class Task extends BaseEntity implements ITaskProps {
+  public get namespace(): string {
+    return "Tasks";
+  }
+
   title = "";
   description = "";
   status!: TaskStatus;
@@ -47,5 +51,18 @@ export default class Task extends BaseEntity implements ITaskProps {
       labelId,
     });
     this._taskLabels.push(taskLabel);
+  }
+
+  static empty(): Task {
+    return new Task({
+      id: "",
+      title: "",
+      description: "",
+      status: TaskStatus.create(TaskStatuses.Draft),
+      createdAt: new Date(),
+      updatedAt: null,
+      completedAt: null,
+      priority: 0,
+    });
   }
 }
