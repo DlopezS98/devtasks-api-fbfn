@@ -1,19 +1,20 @@
 import { IAsyncRepository } from "@Domain/abstractions/repositories/iasync-repository";
 import { IUnitOfWork } from "@Domain/abstractions/repositories/iunit-of-work";
 import Task from "@Domain/entities/task.entity";
-import User from "@Domain/entities/user";
 import FirestoreContext from "../firestore.context";
 import FirestoreRepository from "./firestore.repository";
 import BaseEntity from "@Domain/entities/base-entity";
 import { DocumentReference, Precondition, UpdateData } from "firebase-admin/firestore";
-import RefreshToken from "@Domain/entities/refresh-token.entity";
-// import { WriteBatch } from "firebase-admin/firestore";
+import { IUsersRepository } from "@Domain/abstractions/repositories/iusers-repository";
+import { IRefreshTokensRepository } from "@Domain/abstractions/repositories/irefresh-tokens-repository";
+import UsersRepository from "./users.repository";
+import RefreshTokensRepository from "./refresh-tokens.repository";
 
 /* eslint-disable require-jsdoc */
 export default class UnitOfWork implements IUnitOfWork {
-  public readonly usersRepository: IAsyncRepository<User>;
+  public readonly usersRepository: IUsersRepository;
   public readonly tasksRepository: IAsyncRepository<Task>;
-  public readonly refreshTokensRepository: IAsyncRepository<RefreshToken>;
+  public readonly refreshTokensRepository: IRefreshTokensRepository;
 
   private readonly firestore: FirebaseFirestore.Firestore;
   private batch: FirebaseFirestore.WriteBatch | null = null;
@@ -24,11 +25,9 @@ export default class UnitOfWork implements IUnitOfWork {
     this.firestore = context.firestore();
     this.transaction = tx;
     this.batch = this.transaction ? null : this.firestore.batch();
-    this.usersRepository = new FirestoreRepository<User>(this.firestore, this, () => User.empty());
+    this.usersRepository = new UsersRepository(this.firestore, this);
     this.tasksRepository = new FirestoreRepository<Task>(this.firestore, this, () => Task.empty());
-    this.refreshTokensRepository = new FirestoreRepository<RefreshToken>(this.firestore, this, () =>
-      RefreshToken.empty(),
-    );
+    this.refreshTokensRepository = new RefreshTokensRepository(this.firestore, this);
   }
 
   public set<TEntity extends BaseEntity>(ref: DocumentReference<TEntity>, entity: TEntity): void {
