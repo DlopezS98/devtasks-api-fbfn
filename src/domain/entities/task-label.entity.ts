@@ -8,6 +8,10 @@ export interface ITaskLabelProps {
 }
 
 export default class TaskLabel extends BaseEntity implements ITaskLabelProps {
+  public get namespace(): string {
+    return "TaskLabels";
+  }
+
   taskId: string;
   labelId: string;
   constructor(props: ITaskLabelProps) {
