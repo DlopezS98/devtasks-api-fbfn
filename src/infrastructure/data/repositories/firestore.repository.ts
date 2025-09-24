@@ -91,7 +91,7 @@ export default class FirestoreRepository<TEntity extends BaseEntity> implements 
     return querySnapshot.docs.map((doc) => doc.data());
   }
 
-  private collectionRef(): CollectionReference<TEntity> {
+  protected collectionRef(): CollectionReference<TEntity> {
     const entity = this.entityFactory();
     return this.firestore
       .collection(entity.namespace)
