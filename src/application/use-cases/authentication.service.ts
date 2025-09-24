@@ -55,7 +55,7 @@ export default class AuthenticationService implements IAuthenticationService {
     const password = request.password;
 
     const user = await this.unitOfWork.usersRepository.getByEmailAsync(email.getValue());
-    if (!user) throw new DomainError("Email already in use", ErrorCodes.EMAIL_ALREADY_EXISTS);
+    if (user) throw new DomainError("Email already in use", ErrorCodes.EMAIL_ALREADY_EXISTS);
 
     const { hashedPassword, salt } = this.passwordHasher.hashPassword(password);
     const newUser = User.create({ email: email, passwordHash: hashedPassword, passwordSalt: salt.toString("base64") });
