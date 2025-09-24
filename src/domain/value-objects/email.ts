@@ -10,7 +10,8 @@ interface EmailProps {
  * Value Object representing an Email.
  */
 export default class Email extends ValueObject<EmailProps> {
-  private static emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // eslint-disable-next-line max-len
+  private static emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   // eslint-disable-next-line require-jsdoc
   private constructor(email: string) {
@@ -30,6 +31,7 @@ export default class Email extends ValueObject<EmailProps> {
     const normalizedEmail = email.trim().toLowerCase();
 
     if (!this.emailRegex.test(normalizedEmail)) {
+      console.error("Invalid email format:", normalizedEmail);
       throw new InvalidEmailError(normalizedEmail);
     }
 
