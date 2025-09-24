@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import * as crypto from "crypto";
 import { JwtOptions } from "../models/jwt-options";
-import User from "@Domain/entities/user";
+import User from "@Domain/entities/user.entity";
 import { GeneratedRefreshTokenDto } from "@Application/dtos/response/refresh-token.dto";
 import { ITokenService } from "@Application/abstractions/itoken.service";
 
