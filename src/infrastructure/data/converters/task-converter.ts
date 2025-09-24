@@ -2,6 +2,7 @@
 import Task from "@Domain/entities/task.entity";
 import FirestoreUtils from "../firestore.utils";
 import { FirestoreDataConverter } from "firebase-admin/firestore";
+import * as admin from "firebase-admin";
 
 export default class TaskConverter implements FirestoreDataConverter<Task> {
   toFirestore(model: Task): FirebaseFirestore.DocumentData {
@@ -10,9 +11,9 @@ export default class TaskConverter implements FirestoreDataConverter<Task> {
       description: model.description,
       status: model.status,
       priority: model.priority,
-      createdAt: FirebaseFirestore.FieldValue.serverTimestamp(),
-      updatedAt: model.updatedAt ? FirebaseFirestore.FieldValue.serverTimestamp() : null,
-      completedAt: model.completedAt ? FirebaseFirestore.FieldValue.serverTimestamp() : null,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: model.updatedAt ? admin.firestore.FieldValue.serverTimestamp() : null,
+      completedAt: model.completedAt ? admin.firestore.FieldValue.serverTimestamp() : null,
     };
   }
 

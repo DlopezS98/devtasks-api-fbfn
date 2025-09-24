@@ -1,6 +1,7 @@
 import RefreshToken from "@Domain/entities/refresh-token.entity";
 import { FirestoreDataConverter } from "firebase-admin/firestore";
 import FirestoreUtils from "../firestore.utils";
+import * as admin from "firebase-admin";
 
 /* eslint-disable require-jsdoc */
 export default class RefreshTokenConverter implements FirestoreDataConverter<RefreshToken> {
@@ -11,9 +12,9 @@ export default class RefreshTokenConverter implements FirestoreDataConverter<Ref
       createdByIp: entity.createdByIp,
       userAgent: entity.userAgent,
       deviceName: entity.deviceName,
-      revokedAt: entity.revokedAt ? FirebaseFirestore.FieldValue.serverTimestamp() : null,
+      revokedAt: entity.revokedAt ? admin.firestore.FieldValue.serverTimestamp() : null,
       expiresAt: entity.expiresAt,
-      createdAt: FirebaseFirestore.FieldValue.serverTimestamp(),
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
     };
   }
 

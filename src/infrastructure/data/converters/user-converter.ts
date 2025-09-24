@@ -2,6 +2,7 @@
 import User from "@Domain/entities/user.entity";
 import { FirestoreDataConverter } from "firebase-admin/firestore";
 import FirestoreUtils from "../firestore.utils";
+import * as admin from "firebase-admin";
 
 export default class UserConverter implements FirestoreDataConverter<User> {
   toFirestore(entity: User): FirebaseFirestore.DocumentData {
@@ -11,8 +12,8 @@ export default class UserConverter implements FirestoreDataConverter<User> {
       passwordHash: entity.passwordHash,
       passwordSalt: entity.passwordSalt,
       isActive: entity.isActive,
-      createdAt: FirebaseFirestore.FieldValue.serverTimestamp(),
-      updatedAt: entity.updatedAt ? FirebaseFirestore.FieldValue.serverTimestamp() : null,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: entity.updatedAt ? admin.firestore.FieldValue.serverTimestamp() : null,
     };
   }
 
