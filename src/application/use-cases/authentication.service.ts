@@ -47,7 +47,7 @@ export default class AuthenticationService implements IAuthenticationService {
     await this.unitOfWork.refreshTokensRepository.addAsync(newRefreshToken);
     await this.unitOfWork.saveChangesAsync();
 
-    return Promise.resolve({ accessToken, refreshToken, tokenExpiresAt, refreshTokenExpiresAt });
+    return { accessToken, refreshToken, tokenExpiresAt, refreshTokenExpiresAt };
   }
 
   async registerAsync(request: AuthenticateUserReqDto): Promise<UserResponseDto> {
