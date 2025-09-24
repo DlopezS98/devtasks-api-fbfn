@@ -45,25 +45,50 @@ export default class FirestoreRepository<TEntity extends BaseEntity> implements 
     return doc.exists ? doc.data() as TEntity : null;
   }
 
-  updateAsync(entity: TEntity): Promise<void>;
-  updateAsync(entities: TEntity[]): Promise<void>;
-  updateAsync(entities: unknown): Promise<void> {
-    throw new Error("Method not implemented.");
+  async updateAsync(entity: TEntity): Promise<void>;
+  async updateAsync(entities: TEntity[]): Promise<void>;
+  async updateAsync(entities: TEntity | TEntity[]): Promise<void> {
+    if (Array.isArray(entities)) {
+      return this.updateMany(entities);
+    } else {
+      return this.updateSingle(entities);
+    }
   }
-  deleteAsync(id: string): Promise<void>;
-  deleteAsync(entities: TEntity[]): Promise<void>;
-  deleteAsync(entities: unknown): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  private updateMany(entities: TEntity[]): void {
+    if (entities.length === 0) return;
+
+    entities.forEach(this.updateSingle.bind(this));
+  }
+
+  private updateSingle(entity: TEntity): void {
+    this.uow.update(this.collectionRef().doc(entity.id), entity);
+  }
+
+  async deleteAsync(entity: TEntity): Promise<void>;
+  async deleteAsync(entities: TEntity[]): Promise<void>;
+  async deleteAsync(entities: TEntity | TEntity[]): Promise<void> {
+    if (Array.isArray(entities)) {
+      return this.deleteMany(entities);
+    } else {
+      return this.deleteSingle(entities);
+    }
+  }
+
+  private deleteMany(entities: TEntity[]): void {
+    if (entities.length === 0) return;
+
+    entities.forEach(this.deleteSingle.bind(this));
+  }
+
+  private deleteSingle(entity: TEntity): void {
+    this.uow.delete(this.collectionRef().doc(entity.id));
   }
 
   async listAsync(): Promise<TEntity[]> {
     const querySnapshot = await this.collectionRef()
       .get();
     return querySnapshot.docs.map((doc) => doc.data());
-  }
-
-  async saveChangesAsync(): Promise<number> {
-    throw new Error("Method not implemented.");
   }
 
   private collectionRef(): CollectionReference<TEntity> {
