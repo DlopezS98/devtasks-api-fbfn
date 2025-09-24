@@ -1,12 +1,14 @@
 import { IAsyncRepository } from "@Domain/abstractions/repositories/iasync-repository";
 import { IUnitOfWork } from "@Domain/abstractions/repositories/iunit-of-work";
 import Task from "@Domain/entities/task.entity";
-import FirestoreContext from "../firestore.context";
-import FirestoreRepository from "./firestore.repository";
 import BaseEntity from "@Domain/entities/base-entity";
 import { DocumentReference, Precondition, UpdateData } from "firebase-admin/firestore";
 import { IUsersRepository } from "@Domain/abstractions/repositories/iusers-repository";
 import { IRefreshTokensRepository } from "@Domain/abstractions/repositories/irefresh-tokens-repository";
+
+import FirestoreContext from "../firestore.context";
+
+import FirestoreRepository from "./firestore.repository";
 import UsersRepository from "./users.repository";
 import RefreshTokensRepository from "./refresh-tokens.repository";
 
