@@ -1,9 +1,10 @@
+/* eslint-disable import/order */
 import "../paths";
 import app from "./app";
-import FirebaseConfig from "../infrastructure/firebase.config";
+import FirestoreContext from "@Infrastructure/data/firestore.context";
 
 // Initialize Firebase app
-FirebaseConfig.initializeApp();
+FirestoreContext.initializeApp();
 
 const PORT = process.env.PORT || 3000;
 
