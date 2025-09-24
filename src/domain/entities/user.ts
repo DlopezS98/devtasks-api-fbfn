@@ -14,6 +14,10 @@ export interface IUserProps {
 }
 
 export default class User extends BaseEntity implements IUserProps {
+  public get namespace(): string {
+    return "Users";
+  }
+
   displayName = "";
   email!: Email;
   passwordHash = "";
@@ -31,5 +35,22 @@ export default class User extends BaseEntity implements IUserProps {
     this.isActive = props.isActive;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
+  }
+
+  /**
+   * Creates an empty User instance with default values.
+   * @return {User} An empty User instance with default values.
+   */
+  static empty(): User {
+    return new User({
+      id: "",
+      displayName: "",
+      email: Email.create("email@example.com"),
+      passwordHash: "",
+      passwordSalt: "",
+      isActive: false,
+      createdAt: new Date(),
+      updatedAt: null,
+    });
   }
 }
