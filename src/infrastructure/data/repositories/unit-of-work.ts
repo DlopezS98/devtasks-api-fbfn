@@ -6,12 +6,14 @@ import FirestoreContext from "../firestore.context";
 import FirestoreRepository from "./firestore.repository";
 import BaseEntity from "@Domain/entities/base-entity";
 import { DocumentReference, Precondition, UpdateData } from "firebase-admin/firestore";
+import RefreshToken from "@Domain/entities/refresh-token.entity";
 // import { WriteBatch } from "firebase-admin/firestore";
 
 /* eslint-disable require-jsdoc */
 export default class UnitOfWork implements IUnitOfWork {
   public readonly usersRepository: IAsyncRepository<User>;
   public readonly tasksRepository: IAsyncRepository<Task>;
+  public readonly refreshTokensRepository: IAsyncRepository<RefreshToken>;
 
   private readonly firestore: FirebaseFirestore.Firestore;
   private batch: FirebaseFirestore.WriteBatch | null = null;
@@ -24,6 +26,9 @@ export default class UnitOfWork implements IUnitOfWork {
     this.batch = this.transaction ? null : this.firestore.batch();
     this.usersRepository = new FirestoreRepository<User>(this.firestore, this, () => User.empty());
     this.tasksRepository = new FirestoreRepository<Task>(this.firestore, this, () => Task.empty());
+    this.refreshTokensRepository = new FirestoreRepository<RefreshToken>(this.firestore, this, () =>
+      RefreshToken.empty(),
+    );
   }
 
   public set<TEntity extends BaseEntity>(ref: DocumentReference<TEntity>, entity: TEntity): void {
