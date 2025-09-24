@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import User from "@Domain/entities/user";
+import User from "@Domain/entities/user.entity";
 import FirestoreRepository from "./firestore.repository";
 import UnitOfWork from "./unit-of-work";
 import { IUsersRepository } from "@Domain/abstractions/repositories/iusers-repository";

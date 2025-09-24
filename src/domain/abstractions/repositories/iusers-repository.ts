@@ -1,4 +1,4 @@
-import User from "@Domain/entities/user";
+import User from "@Domain/entities/user.entity";
 import { IAsyncRepository } from "./iasync-repository";
 
 export interface IUsersRepository extends IAsyncRepository<User> {

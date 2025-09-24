@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import User from "@Domain/entities/user";
+import User from "@Domain/entities/user.entity";
 import { FirestoreDataConverter } from "firebase-admin/firestore";
 import FirestoreUtils from "../firestore.utils";
 
