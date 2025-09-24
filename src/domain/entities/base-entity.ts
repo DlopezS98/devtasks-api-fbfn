@@ -11,7 +11,7 @@ export default class BaseEntity {
     return this.constructor.name.toLowerCase();
   }
 
-  constructor(public readonly id: string) {}
+  constructor(public id: string) {}
 
   private readonly _domainEvents: IDomainEvent[] = [];
 
