@@ -3,6 +3,7 @@ import { IAsyncRepository } from "@Domain/abstractions/repositories/iasync-repos
 import BaseEntity from "@Domain/entities/base-entity";
 import UnitOfWork from "./unit-of-work";
 import FactoryConverter from "../converters/factory-converter";
+import { CollectionReference } from "firebase-admin/firestore";
 
 /**
  * Generic Firestore repository implementation.
@@ -18,7 +19,27 @@ export default class FirestoreRepository<TEntity extends BaseEntity> implements 
   addAsync(entity: TEntity): Promise<TEntity>;
   addAsync(entities: TEntity[]): Promise<TEntity[]>;
   addAsync(entities: unknown): Promise<TEntity> | Promise<TEntity[]> {
-    throw new Error("Method not implemented.");
+    if (Array.isArray(entities)) {
+      return this.addManyAsync(entities);
+    } else {
+      return this.addSingleAsync(entities as TEntity);
+    }
+  }
+
+  private async addSingleAsync(entity: TEntity): Promise<TEntity> {
+    entity.id = this.collectionRef().doc().id;
+    this.uow.set(this.collectionRef().doc(entity.id), entity);
+    return entity;
+  }
+
+  private async addManyAsync(entities: TEntity[]): Promise<TEntity[]> {
+    if (entities.length === 0) return [];
+
+    for (const entity of entities) {
+      entity.id = this.collectionRef().doc().id;
+      this.uow.set(this.collectionRef().doc(entity.id), entity);
+    }
+    return entities;
   }
 
   getAsync(id: string): Promise<TEntity | null> {
@@ -36,15 +57,19 @@ export default class FirestoreRepository<TEntity extends BaseEntity> implements 
   }
 
   async listAsync(): Promise<TEntity[]> {
-    const entity = this.entityFactory();
-    const querySnapshot = await this.firestore
-      .collection(entity.namespace)
-      .withConverter(FactoryConverter.createConverter(entity))
+    const querySnapshot = await this.collectionRef()
       .get();
     return querySnapshot.docs.map((doc) => doc.data());
   }
 
   async saveChangesAsync(): Promise<number> {
     throw new Error("Method not implemented.");
+  }
+
+  private collectionRef(): CollectionReference<TEntity> {
+    const entity = this.entityFactory();
+    return this.firestore
+      .collection(entity.namespace)
+      .withConverter(FactoryConverter.createConverter(entity));
   }
 }
