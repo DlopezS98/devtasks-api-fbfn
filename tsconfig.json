@@ -9,7 +9,14 @@
     "sourceMap": true,
     "strict": true,
     "target": "es2017",
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@Application/*": ["src/application/*"],
+      "@Domain/*": ["src/domain/*"],
+      "@Infrastructure/*": ["src/infrastructure/*"],
+      "@Api/*": ["src/api/*"]
+    }
   },
   "compileOnSave": true,
   "include": [
