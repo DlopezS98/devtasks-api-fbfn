@@ -1,12 +1,12 @@
-import User from "@Domain/entities/user";
 import { IAsyncRepository } from "./iasync-repository";
+import { IUsersRepository } from "./iusers-repository";
+import { IRefreshTokensRepository } from "./irefresh-tokens-repository";
 import Task from "@Domain/entities/task.entity";
-import RefreshToken from "@Domain/entities/refresh-token.entity";
 
 export interface IUnitOfWork {
-  readonly usersRepository: IAsyncRepository<User>;
+  readonly usersRepository: IUsersRepository;
   readonly tasksRepository: IAsyncRepository<Task>;
-  readonly refreshTokensRepository: IAsyncRepository<RefreshToken>;
+  readonly refreshTokensRepository: IRefreshTokensRepository;
 
   /** Commits the current unit of work */
   saveChangesAsync(): Promise<number>;
