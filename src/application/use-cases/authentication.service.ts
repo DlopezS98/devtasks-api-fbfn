@@ -4,8 +4,10 @@ import { IPasswordHasherService } from "@Application/abstractions/ipassword-hash
 import { ITokenService } from "@Application/abstractions/itoken.service";
 import { AuthenticateUserReqDto } from "@Application/dtos/request/authenticate-user.dto";
 import { TokenResDto } from "@Application/dtos/response/token.dto";
+import { UserResponseDto } from "@Application/dtos/response/user.dto";
 import { IUnitOfWork } from "@Domain/abstractions/repositories/iunit-of-work";
 import RefreshToken from "@Domain/entities/refresh-token.entity";
+import User from "@Domain/entities/user";
 import DomainError, { ErrorCodes } from "@Domain/errors/domain-error";
 import EntityNotFoundError from "@Domain/errors/entity-not-found.error";
 import Email from "@Domain/value-objects/email";
@@ -46,5 +48,25 @@ export default class AuthenticationService implements IAuthenticationService {
     await this.unitOfWork.saveChangesAsync();
 
     return Promise.resolve({ accessToken, refreshToken, tokenExpiresAt, refreshTokenExpiresAt });
+  }
+
+  async registerAsync(request: AuthenticateUserReqDto): Promise<UserResponseDto> {
+    const email = Email.create(request.email);
+    const password = request.password;
+
+    const user = await this.unitOfWork.usersRepository.getByEmailAsync(email.getValue());
+    if (!user) throw new DomainError("Email already in use", ErrorCodes.EMAIL_ALREADY_EXISTS);
+
+    const { hashedPassword, salt } = this.passwordHasher.hashPassword(password);
+    const newUser = User.create({ email: email, passwordHash: hashedPassword, passwordSalt: salt.toString("base64") });
+    await this.unitOfWork.usersRepository.addAsync(newUser);
+    await this.unitOfWork.saveChangesAsync();
+
+    return {
+      id: newUser.id,
+      email: newUser.email.getValue(),
+      displayName: newUser.displayName,
+      createdAt: newUser.createdAt,
+    };
   }
 }
