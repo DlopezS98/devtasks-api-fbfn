@@ -1,3 +1,4 @@
+import "../paths";
 import app from "./app";
 import FirebaseConfig from "../infrastructure/firebase.config";
 
