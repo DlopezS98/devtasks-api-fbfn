@@ -5,12 +5,13 @@
 import "./paths";
 import { setGlobalOptions } from "firebase-functions";
 import { onRequest } from "firebase-functions/https";
+
 import app from "./api/app";
-import FirebaseConfig from "./infrastructure/firebase.config";
+import FirestoreContext from "./infrastructure/data/firestore.context";
 // import * as logger from "firebase-functions/logger";
 
 // Initialize Firebase app
-FirebaseConfig.initializeApp();
+FirestoreContext.initializeApp();
 
 setGlobalOptions({ maxInstances: 10 });
 
