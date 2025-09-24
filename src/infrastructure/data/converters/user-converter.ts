@@ -3,11 +3,12 @@ import User from "@Domain/entities/user.entity";
 import { FirestoreDataConverter } from "firebase-admin/firestore";
 import FirestoreUtils from "../firestore.utils";
 import * as admin from "firebase-admin";
+import Email from "@Domain/value-objects/email";
 
 export default class UserConverter implements FirestoreDataConverter<User> {
   toFirestore(entity: User): FirebaseFirestore.DocumentData {
     return {
-      email: entity.email,
+      email: entity.email.getValue(),
       displayName: entity.displayName,
       passwordHash: entity.passwordHash,
       passwordSalt: entity.passwordSalt,
@@ -21,7 +22,7 @@ export default class UserConverter implements FirestoreDataConverter<User> {
     const data = snapshot.data();
     return new User({
       id: snapshot.id,
-      email: data.email,
+      email: Email.create(data.email),
       displayName: data.displayName,
       passwordHash: data.passwordHash,
       passwordSalt: data.passwordSalt,
