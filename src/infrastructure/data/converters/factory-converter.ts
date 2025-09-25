@@ -1,7 +1,8 @@
 /* eslint-disable indent */
 import BaseEntity from "@Domain/entities/base-entity";
-import TaskConverter from "./task-converter";
 import { FirestoreDataConverter } from "firebase-admin/firestore";
+
+import TaskConverter from "./task-converter";
 import UserConverter from "./user-converter";
 import RefreshTokenConverter from "./refresh-token-converter";
 
