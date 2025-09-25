@@ -19,4 +19,8 @@ export default class TaskLabel extends BaseEntity implements ITaskLabelProps {
     this.taskId = props.taskId;
     this.labelId = props.labelId;
   }
+
+  static empty(): TaskLabel {
+    return new TaskLabel({ id: "", taskId: "", labelId: "" });
+  }
 }
