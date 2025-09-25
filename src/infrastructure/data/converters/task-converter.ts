@@ -1,8 +1,9 @@
 /* eslint-disable require-jsdoc */
 import Task from "@Domain/entities/task.entity";
-import FirestoreUtils from "../firestore.utils";
 import { FirestoreDataConverter } from "firebase-admin/firestore";
 import * as admin from "firebase-admin";
+
+import FirestoreUtils from "../firestore.utils";
 
 export default class TaskConverter implements FirestoreDataConverter<Task> {
   toFirestore(model: Task): FirebaseFirestore.DocumentData {
