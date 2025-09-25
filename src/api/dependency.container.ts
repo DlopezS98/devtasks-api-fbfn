@@ -22,8 +22,13 @@ export default class DependencyContainer {
     return DependencyContainer.instance;
   }
 
-  public initialize(): void {
+  public initialize(): DependencyContainer {
     this.infrastructureServices.load();
     this.applicationServices.load();
+    return this;
+  }
+
+  public getContainer(): Container {
+    return this.container;
   }
 }
