@@ -1,13 +1,12 @@
-import Task from "@Domain/entities/task.entity";
+import TasksRepository from "@Infrastructure/data/repositories/tasks.repository";
 
-import { IAsyncRepository } from "./iasync-repository";
 import { IUsersRepository } from "./iusers-repository";
 import { IRefreshTokensRepository } from "./irefresh-tokens-repository";
 import { ILabelsRepository } from "./ilabels-repository";
 
 export interface IUnitOfWork {
   readonly usersRepository: IUsersRepository;
-  readonly tasksRepository: IAsyncRepository<Task>;
+  readonly tasksRepository: TasksRepository;
   readonly labelsRepository: ILabelsRepository;
   readonly refreshTokensRepository: IRefreshTokensRepository;
 

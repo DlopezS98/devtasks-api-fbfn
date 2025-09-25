@@ -1,6 +1,4 @@
-import { IAsyncRepository } from "@Domain/abstractions/repositories/iasync-repository";
 import { IUnitOfWork } from "@Domain/abstractions/repositories/iunit-of-work";
-import Task from "@Domain/entities/task.entity";
 import BaseEntity from "@Domain/entities/base-entity";
 import { DocumentReference, Precondition, UpdateData } from "firebase-admin/firestore";
 import { IUsersRepository } from "@Domain/abstractions/repositories/iusers-repository";
@@ -10,15 +8,15 @@ import { ILabelsRepository } from "@Domain/abstractions/repositories/ilabels-rep
 
 import FirestoreContext from "../firestore.context";
 
-import FirestoreRepository from "./firestore.repository";
 import UsersRepository from "./users.repository";
 import RefreshTokensRepository from "./refresh-tokens.repository";
 import LabelsRepository from "./labels.repository";
+import TasksRepository from "./tasks.repository";
 
 @injectable()
 export default class UnitOfWork implements IUnitOfWork {
   public readonly usersRepository: IUsersRepository;
-  public readonly tasksRepository: IAsyncRepository<Task>;
+  public readonly tasksRepository: TasksRepository;
   public readonly refreshTokensRepository: IRefreshTokensRepository;
   public readonly labelsRepository: ILabelsRepository;
 
@@ -35,7 +33,7 @@ export default class UnitOfWork implements IUnitOfWork {
     this.transaction = tx;
     this.batch = this.transaction ? null : this.firestore.batch();
     this.usersRepository = new UsersRepository(this.firestore, this);
-    this.tasksRepository = new FirestoreRepository<Task>(this.firestore, this, () => Task.empty());
+    this.tasksRepository = new TasksRepository(this.firestore, this);
     this.refreshTokensRepository = new RefreshTokensRepository(this.firestore, this);
     this.labelsRepository = new LabelsRepository(this.firestore, this);
   }
