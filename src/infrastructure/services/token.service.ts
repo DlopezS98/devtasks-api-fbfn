@@ -4,12 +4,13 @@ import jwt from "jsonwebtoken";
 import User from "@Domain/entities/user.entity";
 import { GeneratedRefreshTokenDto } from "@Application/dtos/response/refresh-token.dto";
 import { ITokenService } from "@Application/abstractions/itoken.service";
+import { inject, injectable } from "inversify";
 
 import { JwtOptions } from "../models/jwt-options";
 
-/* eslint-disable require-jsdoc */
+@injectable()
 export default class TokenService implements ITokenService {
-  constructor(private jwtOptions: JwtOptions) {}
+  constructor(@inject(JwtOptions.name) private jwtOptions: JwtOptions) {}
 
   generateToken(user: User): [string, Date] {
     const secret = this.jwtOptions.signingKey;
