@@ -5,6 +5,7 @@ import ApplicationContainer from "@Application/application-container.setup";
 
 import AuthenticationController from "./controllers/authentication.controller";
 import LabelsController from "./controllers/labels.controller";
+import { AuthenticatedRouteMiddleware } from "./middlewares/authenticated-route.middleware";
 
 export default class DependencyContainer {
   private static instance: DependencyContainer;
@@ -26,6 +27,9 @@ export default class DependencyContainer {
   }
 
   public initialize(): DependencyContainer {
+    // Middlewares here...
+    this.container.bind(AuthenticatedRouteMiddleware).toSelf().inRequestScope();
+
     // Register controllers here...
     this.container.bind(AuthenticationController).toSelf().inRequestScope();
     this.container.bind(LabelsController).toSelf().inRequestScope();
