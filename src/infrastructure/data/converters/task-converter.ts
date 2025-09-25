@@ -15,6 +15,7 @@ export default class TaskConverter implements FirestoreDataConverter<Task> {
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: model.updatedAt ? admin.firestore.FieldValue.serverTimestamp() : null,
       completedAt: model.completedAt ? admin.firestore.FieldValue.serverTimestamp() : null,
+      createdBy: model.createdBy,
     };
   }
 
@@ -29,6 +30,7 @@ export default class TaskConverter implements FirestoreDataConverter<Task> {
       createdAt: FirestoreUtils.getDateFrom(data.createdAt) ?? new Date(0),
       updatedAt: FirestoreUtils.getDateFrom(data.updatedAt),
       completedAt: FirestoreUtils.getDateFrom(data.completedAt),
+      createdBy: data.createdBy,
     });
   }
 }
