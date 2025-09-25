@@ -1,3 +1,3 @@
-GET http://localhost:3000/api/labels HTTP/1.1
+GET {{baseUrl}}/labels HTTP/1.1
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
