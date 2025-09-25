@@ -8,7 +8,7 @@ export default class LabelConverter implements FirestoreDataConverter<Label> {
   toFirestore(entity: Label): FirebaseFirestore.DocumentData {
     return {
       name: entity.name,
-      normalizedName: entity.normalizedName,
+      normalizedName: entity.normalizedName.getValue(),
       color: entity.color,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: entity.updatedAt ? admin.firestore.FieldValue.serverTimestamp() : null,
