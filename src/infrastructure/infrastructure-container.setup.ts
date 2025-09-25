@@ -4,11 +4,13 @@ import { SERVICE_IDENTIFIERS as APP_SERVICE_IDENTIFIERS } from "@Application/ser
 import { Container } from "inversify";
 import { IPasswordHasherService } from "@Application/abstractions/ipassword-hasher.service";
 import { ITokenService } from "@Application/abstractions/itoken.service";
+import Environment from "src/environment";
 
 import UnitOfWork from "./data/repositories/unit-of-work";
 import FirestoreContext from "./data/firestore.context";
 import PasswordHasherService from "./services/password-hasher.service";
 import TokenService from "./services/token.service";
+import { JwtOptions } from "./models/jwt-options";
 
 export default class InfrastructureContainerSetup {
   private loaded = false;
@@ -26,6 +28,10 @@ export default class InfrastructureContainerSetup {
     if (this.loaded) return;
 
     this.loaded = true;
+    this.container.bind<JwtOptions>(JwtOptions.name).toDynamicValue(() => {
+      const environment = Environment.getInstance();
+      return JwtOptions.fromEnvironment(environment);
+    });
     this.container.bind(FirestoreContext).toSelf().inSingletonScope();
     this.container.bind<IUnitOfWork>(SERVICE_IDENTIFIERS.IUnitOfWork).to(UnitOfWork).inRequestScope();
     this.container
