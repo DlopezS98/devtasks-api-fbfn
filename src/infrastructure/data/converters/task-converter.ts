@@ -2,6 +2,7 @@
 import Task from "@Domain/entities/task.entity";
 import { FirestoreDataConverter } from "firebase-admin/firestore";
 import * as admin from "firebase-admin";
+import TaskLabel from "@Domain/entities/task-label.entity";
 
 import FirestoreUtils from "../firestore.utils";
 
@@ -31,6 +32,24 @@ export default class TaskConverter implements FirestoreDataConverter<Task> {
       updatedAt: FirestoreUtils.getDateFrom(data.updatedAt),
       completedAt: FirestoreUtils.getDateFrom(data.completedAt),
       createdBy: data.createdBy,
+    });
+  }
+}
+
+export class TaskLabelConverter implements FirestoreDataConverter<TaskLabel> {
+  toFirestore(model: TaskLabel): FirebaseFirestore.DocumentData {
+    return {
+      labelId: model.labelId,
+      taskId: model.taskId,
+    };
+  }
+
+  fromFirestore(snapshot: FirebaseFirestore.QueryDocumentSnapshot): TaskLabel {
+    const data = snapshot.data();
+    return new TaskLabel({
+      id: snapshot.id,
+      labelId: data.labelId,
+      taskId: data.taskId,
     });
   }
 }
