@@ -1,13 +1,23 @@
+import { AuthenticatedRouteMiddleware } from "@Api/middlewares/authenticated-route.middleware";
 import { ILabelsService } from "@Application/abstractions/ilabels.service";
 import { BaseRequestDto } from "@Application/dtos/request/base-request.dto";
 import { LabelRequestDto } from "@Application/dtos/request/label.dto";
 import { SERVICE_IDENTIFIERS } from "@Application/service-identifiers";
-import { Request, Response } from "express";
+import { Request, RequestHandler, Response } from "express";
 import { inject, injectable } from "inversify";
 
 @injectable()
 export default class LabelsController {
-  constructor(@inject(SERVICE_IDENTIFIERS.ILabelsService) private readonly labelsService: ILabelsService) {}
+  constructor(
+    @inject(SERVICE_IDENTIFIERS.ILabelsService) private readonly labelsService: ILabelsService,
+    @inject(AuthenticatedRouteMiddleware) private readonly authMiddleware: AuthenticatedRouteMiddleware,
+  ) {}
+
+  /**
+   * Get the array of middlewares to be applied to the routes in this controller
+   * @return {Array<RequestHandler>} Array of middlewares to be applied to the routes in this controller
+   */
+  public getMiddlewares = (): RequestHandler[] => [this.authMiddleware.handleAsync];
 
   async createAsync(req: Request<LabelRequestDto>, res: Response) {
     try {
