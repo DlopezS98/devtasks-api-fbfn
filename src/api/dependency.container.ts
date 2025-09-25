@@ -3,6 +3,8 @@ import { Container } from "inversify";
 import InfrastructureContainerSetup from "@Infrastructure/infrastructure-container.setup";
 import ApplicationContainer from "@Application/application-container.setup";
 
+import AuthenticationController from "./controllers/authentication.controller";
+
 export default class DependencyContainer {
   private static instance: DependencyContainer;
   private readonly infrastructureServices: InfrastructureContainerSetup;
@@ -23,6 +25,10 @@ export default class DependencyContainer {
   }
 
   public initialize(): DependencyContainer {
+    // Register controllers here...
+    this.container.bind(AuthenticationController).toSelf().inRequestScope();
+
+    // Layer setups...
     this.infrastructureServices.load();
     this.applicationServices.load();
     return this;
