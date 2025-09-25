@@ -7,3 +7,6 @@ declare global {
     }
   }
 }
+
+// This export makes this file a module and ensures the declaration is included
+export {};
