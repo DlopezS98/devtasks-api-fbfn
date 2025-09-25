@@ -3,6 +3,8 @@ import { Container } from "inversify";
 import { IAuthenticationService } from "./abstractions/iauthentication.service";
 import { SERVICE_IDENTIFIERS } from "./service-identifiers";
 import AuthenticationService from "./use-cases/authentication.service";
+import { ILabelsService } from "./abstractions/ilabels.service";
+import LabelsService from "./use-cases/labels.service";
 
 
 export default class ApplicationContainer {
@@ -26,6 +28,10 @@ export default class ApplicationContainer {
     this.container
       .bind<IAuthenticationService>(SERVICE_IDENTIFIERS.IAuthService)
       .to(AuthenticationService)
+      .inRequestScope();
+    this.container
+      .bind<ILabelsService>(SERVICE_IDENTIFIERS.ILabelsService)
+      .to(LabelsService)
       .inRequestScope();
   }
 }
