@@ -6,20 +6,21 @@ import { DocumentReference, Precondition, UpdateData } from "firebase-admin/fire
 import { IUsersRepository } from "@Domain/abstractions/repositories/iusers-repository";
 import { IRefreshTokensRepository } from "@Domain/abstractions/repositories/irefresh-tokens-repository";
 import { inject, injectable } from "inversify";
-import Label from "@Domain/entities/labels.entity";
+import { ILabelsRepository } from "@Domain/abstractions/repositories/ilabels-repository";
 
 import FirestoreContext from "../firestore.context";
 
 import FirestoreRepository from "./firestore.repository";
 import UsersRepository from "./users.repository";
 import RefreshTokensRepository from "./refresh-tokens.repository";
+import LabelsRepository from "./labels.repository";
 
 @injectable()
 export default class UnitOfWork implements IUnitOfWork {
   public readonly usersRepository: IUsersRepository;
   public readonly tasksRepository: IAsyncRepository<Task>;
   public readonly refreshTokensRepository: IRefreshTokensRepository;
-  public readonly labelsRepository: IAsyncRepository<Label>;
+  public readonly labelsRepository: ILabelsRepository;
 
   private readonly firestore: FirebaseFirestore.Firestore;
   private batch: FirebaseFirestore.WriteBatch | null = null;
@@ -36,7 +37,7 @@ export default class UnitOfWork implements IUnitOfWork {
     this.usersRepository = new UsersRepository(this.firestore, this);
     this.tasksRepository = new FirestoreRepository<Task>(this.firestore, this, () => Task.empty());
     this.refreshTokensRepository = new RefreshTokensRepository(this.firestore, this);
-    this.labelsRepository = new FirestoreRepository<Label>(this.firestore, this, () => Label.empty());
+    this.labelsRepository = new LabelsRepository(this.firestore, this);
   }
 
   public set<TEntity extends BaseEntity>(ref: DocumentReference<TEntity>, entity: TEntity): void {
