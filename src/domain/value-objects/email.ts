@@ -26,7 +26,7 @@ export default class Email extends ValueObject<EmailProps> {
    * @throws {DomainError} If the email is empty.
    */
   public static create(email: string): Email {
-    if (!email) throw new DomainError("Email cannot be empty", ErrorCodes.INVALID_INPUT);
+    if (!email) throw new DomainError("Email cannot be empty", ErrorCodes.INVALID_ARGUMENT);
 
     const normalizedEmail = email.trim().toLowerCase();
 

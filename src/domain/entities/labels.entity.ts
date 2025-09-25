@@ -1,3 +1,5 @@
+import NormalizedName from "@Domain/value-objects/normalized-name";
+
 import BaseEntity from "./base-entity";
 
 export interface ILabelProps {
@@ -22,8 +24,8 @@ export default class Label extends BaseEntity implements ILabelProps {
   createdBy = "";
   isActive = true;
 
-  get normalizedName(): string {
-    return this.name.trim().toLowerCase();
+  get normalizedName(): NormalizedName {
+    return NormalizedName.create(this.name);
   }
 
   constructor(props: ILabelProps) {
@@ -44,6 +46,18 @@ export default class Label extends BaseEntity implements ILabelProps {
       createdAt: new Date(),
       updatedAt: null,
       createdBy: "",
+      isActive: true,
+    });
+  }
+
+  static create(name: string, color: string, createdBy: string): Label {
+    return new Label({
+      id: "",
+      name,
+      color,
+      createdAt: new Date(),
+      updatedAt: null,
+      createdBy,
       isActive: true,
     });
   }
