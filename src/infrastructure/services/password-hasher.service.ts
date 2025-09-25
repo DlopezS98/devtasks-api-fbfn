@@ -2,7 +2,9 @@
 import * as crypto from "crypto";
 
 import { IPasswordHasherService } from "@Application/abstractions/ipassword-hasher.service";
+import { injectable } from "inversify";
 
+@injectable()
 export default class PasswordHasherService implements IPasswordHasherService {
   private static readonly Iterations = 100_000;
   private static readonly HashByteSize = 32;
