@@ -1,9 +1,9 @@
-/* eslint-disable require-jsdoc */
 import User from "@Domain/entities/user.entity";
 import { FirestoreDataConverter } from "firebase-admin/firestore";
-import FirestoreUtils from "../firestore.utils";
 import * as admin from "firebase-admin";
 import Email from "@Domain/value-objects/email";
+
+import FirestoreUtils from "../firestore.utils";
 
 export default class UserConverter implements FirestoreDataConverter<User> {
   toFirestore(entity: User): FirebaseFirestore.DocumentData {
