@@ -1,6 +1,7 @@
 import "module-alias/register";
-import { addAliases } from "module-alias";
 import * as path from "path";
+
+import { addAliases } from "module-alias";
 
 addAliases({
   "@Application": path.resolve(__dirname, "application"),
