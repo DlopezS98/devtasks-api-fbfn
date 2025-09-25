@@ -11,7 +11,7 @@ export default class TaskConverter implements FirestoreDataConverter<Task> {
     return {
       title: model.title,
       description: model.description,
-      status: model.status,
+      status: model.status.getValue(),
       priority: model.priority,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: model.updatedAt ? admin.firestore.FieldValue.serverTimestamp() : null,
