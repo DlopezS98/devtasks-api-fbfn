@@ -22,6 +22,6 @@ app.get("/health", (req, res) => {
 });
 
 const container = DependencyContainer.getInstance().initialize().getContainer();
-app.use(authRouterBuilder(container.get(AuthenticationController)));
+app.use("/api", authRouterBuilder(container.get(AuthenticationController)));
 
 export default app;
