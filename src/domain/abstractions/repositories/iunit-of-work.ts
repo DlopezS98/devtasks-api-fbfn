@@ -1,4 +1,5 @@
 import Task from "@Domain/entities/task.entity";
+import Label from "@Domain/entities/labels.entity";
 
 import { IAsyncRepository } from "./iasync-repository";
 import { IUsersRepository } from "./iusers-repository";
@@ -7,6 +8,7 @@ import { IRefreshTokensRepository } from "./irefresh-tokens-repository";
 export interface IUnitOfWork {
   readonly usersRepository: IUsersRepository;
   readonly tasksRepository: IAsyncRepository<Task>;
+  readonly labelsRepository: IAsyncRepository<Label>;
   readonly refreshTokensRepository: IRefreshTokensRepository;
 
   /** Commits the current unit of work */
