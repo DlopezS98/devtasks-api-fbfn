@@ -9,7 +9,7 @@ import { inject, injectable } from "inversify";
 export default class UsersService implements IUsersService {
   constructor(@inject(SERVICE_IDENTIFIERS.IUnitOfWork) private readonly unitOfWork: IUnitOfWork) {}
 
-  async getByIdAsync(id: string): Promise<UserResponseDto | null> {
+  async getByIdAsync(id: string): Promise<UserResponseDto> {
     const user = await this.unitOfWork.usersRepository.getAsync(id);
     if (!user) throw new EntityNotFoundError("User");
 
