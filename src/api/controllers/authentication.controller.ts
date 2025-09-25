@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
 import { IAuthenticationService } from "@Application/abstractions/iauthentication.service";
 import { AuthenticateUserReqDto, UserAuthReqDto } from "@Application/dtos/request/authenticate-user.dto";
+import { inject, injectable } from "inversify";
+import { SERVICE_IDENTIFIERS } from "@Application/service-identifiers";
 
+@injectable()
 export default class AuthenticationController {
-  constructor(private readonly authService: IAuthenticationService) {}
+  constructor(@inject(SERVICE_IDENTIFIERS.IAuthService) private readonly authService: IAuthenticationService) {}
 
   async loginAsync(req: Request<UserAuthReqDto>, res: Response): Promise<void> {
     const { email, password } = req.body;

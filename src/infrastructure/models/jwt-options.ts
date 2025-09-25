@@ -1,5 +1,7 @@
+import { injectable } from "inversify";
 import Environment from "src/environment";
 
+@injectable()
 export class JwtOptions {
   private constructor(
     public readonly issuer: string,

@@ -1,21 +1,27 @@
-/* eslint-disable require-jsdoc */
 import { IAuthenticationService } from "@Application/abstractions/iauthentication.service";
 import { IPasswordHasherService } from "@Application/abstractions/ipassword-hasher.service";
 import { ITokenService } from "@Application/abstractions/itoken.service";
 import { AuthenticateUserReqDto } from "@Application/dtos/request/authenticate-user.dto";
 import { TokenResDto } from "@Application/dtos/response/token.dto";
 import { UserResponseDto } from "@Application/dtos/response/user.dto";
+import { SERVICE_IDENTIFIERS as APP_IDENTIFIERS } from "@Application/service-identifiers";
 import { IUnitOfWork } from "@Domain/abstractions/repositories/iunit-of-work";
 import RefreshToken from "@Domain/entities/refresh-token.entity";
 import User from "@Domain/entities/user.entity";
 import DomainError, { ErrorCodes } from "@Domain/errors/domain-error";
 import EntityNotFoundError from "@Domain/errors/entity-not-found.error";
+import { SERVICE_IDENTIFIERS as DOMAIN_IDENTIFIERS } from "@Domain/service-identifiers";
 import Email from "@Domain/value-objects/email";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export default class AuthenticationService implements IAuthenticationService {
   constructor(
+    @inject(DOMAIN_IDENTIFIERS.IUnitOfWork)
     private readonly unitOfWork: IUnitOfWork,
+    @inject(APP_IDENTIFIERS.ITokenService)
     private readonly tokenService: ITokenService,
+    @inject(APP_IDENTIFIERS.IPasswordHasher)
     private readonly passwordHasher: IPasswordHasherService,
   ) {}
 
