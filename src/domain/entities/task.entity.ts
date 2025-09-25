@@ -13,6 +13,7 @@ export interface ITaskProps {
   completedAt: Date | null;
   taskLabels: TaskLabel[];
   priority: number;
+  createdBy: string;
 }
 
 export default class Task extends BaseEntity implements ITaskProps {
@@ -27,6 +28,7 @@ export default class Task extends BaseEntity implements ITaskProps {
   updatedAt: Date | null = null;
   completedAt: Date | null = null;
   priority = 0;
+  createdBy = "";
 
   get taskLabels() {
     return this._taskLabels;
@@ -41,6 +43,8 @@ export default class Task extends BaseEntity implements ITaskProps {
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.completedAt = props.completedAt;
+    this.priority = props.priority;
+    this.createdBy = props.createdBy;
   }
 
   addLabel(labelId: string) {
@@ -62,6 +66,21 @@ export default class Task extends BaseEntity implements ITaskProps {
       updatedAt: null,
       completedAt: null,
       priority: 0,
+      createdBy: "",
+    });
+  }
+
+  static create(props: Pick<ITaskProps, "title" | "description" | "status" | "priority" | "createdBy">): Task {
+    return new Task({
+      id: "", // entity generated value
+      title: props.title,
+      description: props.description,
+      status: props.status,
+      createdAt: new Date(), // placeholder, should be set by repository
+      updatedAt: null,
+      completedAt: null,
+      priority: props.priority,
+      createdBy: props.createdBy,
     });
   }
 }
