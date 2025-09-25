@@ -2,7 +2,7 @@
 import BaseEntity from "@Domain/entities/base-entity";
 import { FirestoreDataConverter } from "firebase-admin/firestore";
 
-import TaskConverter from "./task-converter";
+import TaskConverter, { TaskLabelConverter } from "./task-converter";
 import UserConverter from "./user-converter";
 import RefreshTokenConverter from "./refresh-token-converter";
 import LabelConverter from "./label-converter";
@@ -14,6 +14,7 @@ export default class FactoryConverter {
       case "Users": return new UserConverter() as unknown as FirestoreDataConverter<TEntity>;
       case "RefreshTokens": return new RefreshTokenConverter() as unknown as FirestoreDataConverter<TEntity>;
       case "Labels": return new LabelConverter() as unknown as FirestoreDataConverter<TEntity>;
+      case "TaskLabels": return new TaskLabelConverter() as unknown as FirestoreDataConverter<TEntity>;
       default: throw new Error(`No converter found for entity namespace: ${entity.namespace}`);
     }
   }
