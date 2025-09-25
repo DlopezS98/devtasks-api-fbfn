@@ -22,6 +22,10 @@ export default class Label extends BaseEntity implements ILabelProps {
   createdBy = "";
   isActive = true;
 
+  get normalizedName(): string {
+    return this.name.trim().toLowerCase();
+  }
+
   constructor(props: ILabelProps) {
     super(props.id);
     this.name = props.name;
