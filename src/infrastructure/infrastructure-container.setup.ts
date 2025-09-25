@@ -33,7 +33,7 @@ export default class InfrastructureContainerSetup {
       const environment = Environment.getInstance();
       return JwtOptions.fromEnvironment(environment);
     });
-    this.container.bind(FirestoreContext).toSelf().inSingletonScope();
+    this.container.bind<FirestoreContext>(FirestoreContext.name).toResolvedValue(() => FirestoreContext.getInstance());
     this.container.bind<IUnitOfWork>(SERVICE_IDENTIFIERS.IUnitOfWork).to(UnitOfWork).inRequestScope();
     this.container
       .bind<IPasswordHasherService>(APP_SERVICE_IDENTIFIERS.IPasswordHasher)

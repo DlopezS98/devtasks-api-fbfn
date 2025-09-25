@@ -5,6 +5,7 @@ import BaseEntity from "@Domain/entities/base-entity";
 import { DocumentReference, Precondition, UpdateData } from "firebase-admin/firestore";
 import { IUsersRepository } from "@Domain/abstractions/repositories/iusers-repository";
 import { IRefreshTokensRepository } from "@Domain/abstractions/repositories/irefresh-tokens-repository";
+import { inject, injectable } from "inversify";
 
 import FirestoreContext from "../firestore.context";
 
@@ -12,7 +13,7 @@ import FirestoreRepository from "./firestore.repository";
 import UsersRepository from "./users.repository";
 import RefreshTokensRepository from "./refresh-tokens.repository";
 
-/* eslint-disable require-jsdoc */
+@injectable()
 export default class UnitOfWork implements IUnitOfWork {
   public readonly usersRepository: IUsersRepository;
   public readonly tasksRepository: IAsyncRepository<Task>;
@@ -23,7 +24,10 @@ export default class UnitOfWork implements IUnitOfWork {
   private transaction: FirebaseFirestore.Transaction | null = null;
   private pendingOperations = 0;
 
-  constructor(context: FirestoreContext, tx: FirebaseFirestore.Transaction | null = null) {
+  constructor(
+    @inject(FirestoreContext.name) context: FirestoreContext,
+      tx: FirebaseFirestore.Transaction | null = null,
+  ) {
     this.firestore = context.firestore();
     this.transaction = tx;
     this.batch = this.transaction ? null : this.firestore.batch();
