@@ -6,12 +6,16 @@ import { SERVICE_IDENTIFIERS } from "@Application/service-identifiers";
 import { Request, RequestHandler, Response } from "express";
 import { inject, injectable } from "inversify";
 
+import BaseApiController from "./base-api.controller";
+
 @injectable()
-export default class LabelsController {
+export default class LabelsController extends BaseApiController {
   constructor(
     @inject(SERVICE_IDENTIFIERS.ILabelsService) private readonly labelsService: ILabelsService,
     @inject(AuthenticatedRouteMiddleware) private readonly authMiddleware: AuthenticatedRouteMiddleware,
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Get the array of middlewares to be applied to the routes in this controller
@@ -21,7 +25,8 @@ export default class LabelsController {
 
   async createAsync(req: Request<LabelRequestDto>, res: Response) {
     try {
-      const request: BaseRequestDto<LabelRequestDto> = { userId: "", data: req.body };
+      const user = this.getCurrentUser(req);
+      const request: BaseRequestDto<LabelRequestDto> = { userId: user.id, data: req.body };
       const label = await this.labelsService.addAsync(request);
       res.status(201).json(label);
     } catch (error) {
@@ -32,7 +37,8 @@ export default class LabelsController {
 
   async listAsync(req: Request, res: Response) {
     try {
-      const labels = await this.labelsService.listAsync();
+      const user = this.getCurrentUser(req);
+      const labels = await this.labelsService.listAsync(user.id);
       res.status(200).json(labels);
     } catch (error) {
       const message = error instanceof Error ? error.message : "An unexpected error occurred.";
