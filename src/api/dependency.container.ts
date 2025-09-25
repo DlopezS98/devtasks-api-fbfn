@@ -4,6 +4,7 @@ import InfrastructureContainerSetup from "@Infrastructure/infrastructure-contain
 import ApplicationContainer from "@Application/application-container.setup";
 
 import AuthenticationController from "./controllers/authentication.controller";
+import LabelsController from "./controllers/labels.controller";
 
 export default class DependencyContainer {
   private static instance: DependencyContainer;
@@ -27,6 +28,7 @@ export default class DependencyContainer {
   public initialize(): DependencyContainer {
     // Register controllers here...
     this.container.bind(AuthenticationController).toSelf().inRequestScope();
+    this.container.bind(LabelsController).toSelf().inRequestScope();
 
     // Layer setups...
     this.infrastructureServices.load();
