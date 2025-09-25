@@ -1,13 +1,16 @@
 import BaseEntity from "@Domain/entities/base-entity";
 import * as admin from "firebase-admin";
+import { injectable } from "inversify";
+
+// import serviceAccount from "../../../devtasks-serviceaccount.json";
 import FactoryConverter from "./converters/factory-converter";
-// import serviceAccount from "./devtasks-serviceaccount.json";
 
 /**
  * Firebase configuration class.
  * It prevents the need for multiple imports of Firebase configuration throughout the codebase.
  * @class FirebaseConfig
  */
+@injectable()
 export default class FirestoreContext {
   private static instance: FirestoreContext;
   private readonly fbApp: admin.app.App;
