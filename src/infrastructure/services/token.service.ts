@@ -5,6 +5,7 @@ import User from "@Domain/entities/user.entity";
 import { GeneratedRefreshTokenDto } from "@Application/dtos/response/refresh-token.dto";
 import { ITokenService } from "@Application/abstractions/itoken.service";
 import { inject, injectable } from "inversify";
+import { JwtPayloadDto } from "@Application/dtos/response/jwt-payload.dto";
 
 import { JwtOptions } from "../models/jwt-options";
 
@@ -37,14 +38,23 @@ export default class TokenService implements ITokenService {
     return [token, expirationDate];
   }
 
-  verifyToken(token: string): boolean {
+  verifyToken(token: string): { isValid: boolean, payload: JwtPayloadDto | null } {
     const secret = this.jwtOptions.signingKey;
     try {
       const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
       // Check if token is expired: Math.floor(Date.now() / 1000) gives current time in seconds since epoch
-      return typeof decoded.exp === "number" && decoded.exp > Math.floor(Date.now() / 1000);
+      const isValid = typeof decoded.exp === "number" && decoded.exp > Math.floor(Date.now() / 1000);
+      const payload: JwtPayloadDto | null = isValid ? {
+        uid: String(decoded.uid),
+        email: decoded.email,
+        displayName: decoded.displayName,
+        iat: decoded.iat as number,
+        exp: decoded.exp as number,
+      } : null;
+
+      return { isValid, payload };
     } catch (error) {
-      return false;
+      return { isValid: false, payload: null };
     }
   }
 
