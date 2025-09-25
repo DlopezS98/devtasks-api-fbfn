@@ -4,7 +4,8 @@ import { SERVICE_IDENTIFIERS as APP_SERVICE_IDENTIFIERS } from "@Application/ser
 import { Container } from "inversify";
 import { IPasswordHasherService } from "@Application/abstractions/ipassword-hasher.service";
 import { ITokenService } from "@Application/abstractions/itoken.service";
-import Environment from "src/environment";
+
+import Environment from "../environment";
 
 import UnitOfWork from "./data/repositories/unit-of-work";
 import FirestoreContext from "./data/firestore.context";
