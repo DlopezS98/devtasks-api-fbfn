@@ -14,7 +14,7 @@ import EntityNotFoundError from "@Domain/errors/entity-not-found.error";
 export default class LabelsService implements ILabelsService {
   constructor(@inject(SERVICE_IDENTIFIERS.IUnitOfWork) private readonly unitOfWork: IUnitOfWork) {}
 
-  async AddAsync(request: BaseRequestDto<LabelRequestDto>): Promise<LabelResponseDto> {
+  async addAsync(request: BaseRequestDto<LabelRequestDto>): Promise<LabelResponseDto> {
     const existingLabel = await this.unitOfWork.labelsRepository.getByNameAsync(request.data.name);
     if (existingLabel) throw new Error("Label with the same name already exists.");
 
@@ -32,7 +32,7 @@ export default class LabelsService implements ILabelsService {
     };
   }
 
-  async DeleteAsync(id: string): Promise<void> {
+  async deleteAsync(id: string): Promise<void> {
     const label = await this.unitOfWork.labelsRepository.getAsync(id);
     if (!label) throw new EntityNotFoundError(Label.name);
 

@@ -4,6 +4,6 @@ import { LabelResponseDto } from "@Application/dtos/response/label.dto";
 
 export interface ILabelsService {
   listAsync(): Promise<LabelResponseDto[]>;
-  AddAsync(request: BaseRequestDto<LabelRequestDto>): Promise<LabelResponseDto>;
-  DeleteAsync(id: string): Promise<void>;
+  addAsync(request: BaseRequestDto<LabelRequestDto>): Promise<LabelResponseDto>;
+  deleteAsync(id: string): Promise<void>;
 }
