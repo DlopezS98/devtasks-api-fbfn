@@ -7,6 +7,8 @@ import { ILabelsService } from "./abstractions/ilabels.service";
 import LabelsService from "./use-cases/labels.service";
 import { IUsersService } from "./abstractions/iusers.service";
 import UsersService from "./use-cases/users.service";
+import { ITasksService } from "./abstractions/itasks.service";
+import TasksService from "./use-cases/tasks.service";
 
 
 export default class ApplicationContainer {
@@ -38,6 +40,10 @@ export default class ApplicationContainer {
     this.container
       .bind<IUsersService>(SERVICE_IDENTIFIERS.IUsersService)
       .to(UsersService)
+      .inRequestScope();
+    this.container
+      .bind<ITasksService>(SERVICE_IDENTIFIERS.ITasksService)
+      .to(TasksService)
       .inRequestScope();
   }
 }

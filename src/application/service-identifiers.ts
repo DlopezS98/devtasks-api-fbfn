@@ -4,4 +4,5 @@ export const SERVICE_IDENTIFIERS = {
   IPasswordHasher: Symbol.for("IPasswordHasherService"),
   ILabelsService: Symbol.for("ILabelsService"),
   IUsersService: Symbol.for("IUsersService"),
+  ITasksService: Symbol.for("ITasksService"),
 };
