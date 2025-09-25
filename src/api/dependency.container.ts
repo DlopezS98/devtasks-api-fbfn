@@ -7,7 +7,7 @@ export default class DependencyContainer {
   private static instance: DependencyContainer;
   private readonly infrastructureServices: InfrastructureContainerSetup;
   private readonly applicationServices: ApplicationContainer;
-  public readonly container: Container;
+  private readonly container: Container;
 
   private constructor() {
     this.container = new Container({ defaultScope: "Request" });
