@@ -1,6 +1,5 @@
-/* eslint-disable require-jsdoc */
-
 import DomainError, { ErrorCodes } from "../errors/domain-error";
+
 import ValueObject from "./value-object";
 
 
@@ -25,12 +24,12 @@ export default class TaskStatus extends ValueObject<TaskStatusProps> {
    * @param {TaskStatuses} status The status to create the TaskStatus value object.
    * @return {TaskStatus} An instance of the TaskStatus value object.
    */
-  public static create(status: TaskStatuses): TaskStatus {
-    if (!Object.values(TaskStatuses).includes(status)) {
+  public static create(status: string): TaskStatus {
+    if (!Object.values(TaskStatuses).includes(status as TaskStatuses)) {
       throw new DomainError(`Invalid task status: ${status}`, ErrorCodes.INVALID_TASK_STATUS);
     }
 
-    return new TaskStatus(status);
+    return new TaskStatus(status as TaskStatuses);
   }
 
   /**
