@@ -1,7 +1,8 @@
 import RefreshToken from "@Domain/entities/refresh-token.entity";
 import { FirestoreDataConverter } from "firebase-admin/firestore";
-import FirestoreUtils from "../firestore.utils";
 import * as admin from "firebase-admin";
+
+import FirestoreUtils from "../firestore.utils";
 
 /* eslint-disable require-jsdoc */
 export default class RefreshTokenConverter implements FirestoreDataConverter<RefreshToken> {
