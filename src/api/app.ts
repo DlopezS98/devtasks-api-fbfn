@@ -6,6 +6,8 @@ import DependencyContainer from "./dependency.container";
 import AuthenticationController from "./controllers/authentication.controller";
 import labelsRouterBuilder from "./routes/labels.routes";
 import LabelsController from "./controllers/labels.controller";
+import tasksRouterBuilder from "./routes/tasks.routes";
+import TasksController from "./controllers/tasks.controller";
 
 const app: Express = express();
 
@@ -26,5 +28,6 @@ app.get("/health", (req, res) => {
 const container = DependencyContainer.getInstance().initialize().getContainer();
 app.use("/api", authRouterBuilder(container.get(AuthenticationController)));
 app.use("/api", labelsRouterBuilder(container.get(LabelsController)));
+app.use("/api", tasksRouterBuilder(container.get(TasksController)));
 
 export default app;
