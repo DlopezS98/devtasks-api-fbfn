@@ -1,6 +1,5 @@
-/* eslint-disable require-jsdoc */
-
 import TaskStatus, { TaskStatuses } from "../value-objects/task-status";
+
 import BaseEntity from "./base-entity";
 import TaskLabel from "./task-label.entity";
 
