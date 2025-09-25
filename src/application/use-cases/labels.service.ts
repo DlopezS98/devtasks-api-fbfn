@@ -41,8 +41,8 @@ export default class LabelsService implements ILabelsService {
     await this.unitOfWork.saveChangesAsync();
   }
 
-  async listAsync(): Promise<LabelResponseDto[]> {
-    const labels = await this.unitOfWork.labelsRepository.listAsync();
+  async listAsync(userId: string): Promise<LabelResponseDto[]> {
+    const labels = await this.unitOfWork.labelsRepository.getByUserAsync(userId);
     return labels.map((label) => ({
       id: label.id,
       name: label.name,
