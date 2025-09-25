@@ -5,6 +5,8 @@ import { SERVICE_IDENTIFIERS } from "./service-identifiers";
 import AuthenticationService from "./use-cases/authentication.service";
 import { ILabelsService } from "./abstractions/ilabels.service";
 import LabelsService from "./use-cases/labels.service";
+import { IUsersService } from "./abstractions/iusers.service";
+import UsersService from "./use-cases/users.service";
 
 
 export default class ApplicationContainer {
@@ -32,6 +34,10 @@ export default class ApplicationContainer {
     this.container
       .bind<ILabelsService>(SERVICE_IDENTIFIERS.ILabelsService)
       .to(LabelsService)
+      .inRequestScope();
+    this.container
+      .bind<IUsersService>(SERVICE_IDENTIFIERS.IUsersService)
+      .to(UsersService)
       .inRequestScope();
   }
 }
