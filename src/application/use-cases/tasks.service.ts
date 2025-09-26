@@ -59,6 +59,18 @@ export default class TasksService implements ITasksService {
       sorts: this.parseSorts(baseRequest.data.sorts),
       pagination: this.getPagination(baseRequest.data.page, baseRequest.data.pageSize),
     };
+    const userFilter: FilterDescriptor<Task> = {
+      field: "createdBy",
+      operator: "eq",
+      value: baseRequest.userId,
+    };
+    const isActiveFilter: FilterDescriptor<Task> = {
+      field: "isActive",
+      operator: "eq",
+      value: true,
+    };
+    query.filters?.push(userFilter);
+    query.filters?.push(isActiveFilter);
     const { items, totalCount, skip, take } = await this.unitOfWork.tasksRepository.queryAsync(query);
     return { items: items.map(this.mapTaskToDto), totalCount, skip, take };
   }
