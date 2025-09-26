@@ -10,6 +10,7 @@ export interface ITasksService {
   createAsync(request: BaseRequestDto<CreateTaskRequestDto>): Promise<TaskResponseDto>;
   addLabelAsync(taskId: string, labelId: string): Promise<void>;
   removeLabelAsync(taskId: string, labelId: string): Promise<void>;
+  getByIdAsync(taskId: string): Promise<TaskResponseDto>;
   deleteAsync(taskId: string): Promise<void>;
   updateAsync(taskId: string, request: BaseRequestDto<UpdateTaskRequestDto>): Promise<TaskResponseDto>;
 }

@@ -41,6 +41,14 @@ export default class TasksService implements ITasksService {
     return taskDto;
   }
 
+  async getByIdAsync(taskId: string): Promise<TaskResponseDto> {
+    const task = await this.unitOfWork.tasksRepository.getAsync(taskId);
+    if (!task) throw new EntityNotFoundError("Task");
+
+    const taskDto = this.mapTaskToDto(task);
+    return taskDto;
+  }
+
   async addLabelAsync(taskId: string, labelId: string): Promise<void> {
     const task = await this.unitOfWork.tasksRepository.getAsync(taskId);
     if (!task) throw new EntityNotFoundError("Task");
@@ -55,7 +63,6 @@ export default class TasksService implements ITasksService {
     await this.unitOfWork.tasksRepository.addLabelAsync(newTaskLabel);
     await this.unitOfWork.saveChangesAsync();
   }
-
 
   async searchAsync(baseRequest: BaseRequestDto<QueryDto>): Promise<PagedResult<TaskResponseDto>> {
     const query: Query<Task> = {
