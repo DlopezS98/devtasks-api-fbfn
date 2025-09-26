@@ -130,7 +130,7 @@ export default class FirestoreRepository<TEntity extends BaseEntity> implements 
 
     // Apply filtering
     if (query.filters) {
-      this.applyFilters(firestoreQuery, query.filters);
+      firestoreQuery = this.applyFilters(firestoreQuery, query.filters);
     }
 
     // Apply sorting
@@ -154,7 +154,10 @@ export default class FirestoreRepository<TEntity extends BaseEntity> implements 
   }
 
   // apply filters
-  protected applyFilters(firestoreQuery: FirebaseFirestore.Query<TEntity>, filters: FilterDescriptor<TEntity>[]): void {
+  protected applyFilters(
+    firestoreQuery: FirebaseFirestore.Query<TEntity>,
+    filters: FilterDescriptor<TEntity>[],
+  ): FirebaseFirestore.Query<TEntity> {
     for (const filter of filters) {
       switch (filter.operator) {
         case "eq":
@@ -193,6 +196,8 @@ export default class FirestoreRepository<TEntity extends BaseEntity> implements 
           throw new Error(`Unsupported operator: ${filter.operator}`);
       }
     }
+
+    return firestoreQuery;
   }
 
   protected collectionRef(): CollectionReference<TEntity> {
