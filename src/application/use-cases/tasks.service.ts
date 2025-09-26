@@ -2,6 +2,7 @@ import { ITasksService } from "@Application/abstractions/itasks.service";
 import { BaseRequestDto } from "@Application/dtos/request/base-request.dto";
 import { ApiFilterParam, ApiSortParam, QueryDto } from "@Application/dtos/request/query.dto";
 import { CreateTaskRequestDto } from "@Application/dtos/request/task.dto";
+import { UpdateTaskRequestDto } from "@Application/dtos/request/update-task.dto";
 import { LabelResponseDto } from "@Application/dtos/response/label.dto";
 import { TaskResponseDto } from "@Application/dtos/response/task.dto";
 import { IUnitOfWork } from "@Domain/abstractions/repositories/iunit-of-work";
@@ -106,5 +107,36 @@ export default class TasksService implements ITasksService {
       createdAt: label.createdAt,
       updatedAt: label.updatedAt,
     };
+  }
+
+  async deleteAsync(taskId: string): Promise<void> {
+    const task = await this.unitOfWork.tasksRepository.getAsync(taskId);
+    if (!task) throw new EntityNotFoundError("Task");
+
+    await this.unitOfWork.tasksRepository.deleteAsync(task);
+    await this.unitOfWork.saveChangesAsync();
+  }
+
+  async updateAsync(taskId: string, request: BaseRequestDto<UpdateTaskRequestDto>): Promise<TaskResponseDto> {
+    // TODO: Implement optimistic concurrency control
+    const task = await this.unitOfWork.tasksRepository.getAsync(taskId);
+    if (!task) throw new EntityNotFoundError("Task");
+
+    if (request.data.title !== undefined) task.title = request.data.title;
+    if (request.data.description !== undefined) task.description = request.data.description;
+    if (request.data.status !== undefined) {
+      const status = TaskStatus.create(request.data.status);
+      const canTransition = task.status.canTransitionTo(status);
+      if (!canTransition) throw new DomainError("Invalid task status transition", ErrorCodes.CONFLICT);
+
+      task.status = status;
+    }
+    if (request.data.priority !== undefined) task.priority = request.data.priority;
+
+    await this.unitOfWork.tasksRepository.updateAsync(task);
+    await this.unitOfWork.saveChangesAsync();
+    const taskDto = this.mapTaskToDto(task);
+
+    return taskDto;
   }
 }
