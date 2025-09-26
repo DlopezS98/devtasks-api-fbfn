@@ -1,5 +1,6 @@
 import DomainError, { ErrorCodes } from "../errors/domain-error";
 import InvalidEmailError from "../errors/invalid-email.error";
+
 import ValueObject from "./value-object";
 
 interface EmailProps {
