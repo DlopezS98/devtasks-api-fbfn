@@ -61,6 +61,17 @@ export default class TasksController extends BaseApiController {
     }
   }
 
+  async removeLabelAsync(req: Request, res: Response) {
+    try {
+      const { taskId, labelId } = req.params;
+      await this.tasksService.removeLabelAsync(taskId, labelId);
+      res.status(204).send();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
+      res.status(500).json({ error: message });
+    }
+  }
+
   async deleteAsync(req: Request<{ taskId: string }>, res: Response) {
     try {
       const { taskId } = req.params;

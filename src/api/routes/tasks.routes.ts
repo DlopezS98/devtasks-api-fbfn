@@ -23,6 +23,12 @@ const tasksRouterBuilder = (controller: TasksController) => {
   );
 
   router.delete(
+    "/tasks/:taskId/labels/:labelId",
+    ...controller.getMiddlewares(),
+    controller.removeLabelAsync.bind(controller) as unknown as RequestHandler,
+  );
+
+  router.delete(
     "/tasks/:taskId",
     ...controller.getMiddlewares(),
     controller.deleteAsync.bind(controller) as unknown as RequestHandler,
