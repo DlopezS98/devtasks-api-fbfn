@@ -1,6 +1,7 @@
-import RefreshToken from "@Domain/entities/refresh-token.entity";
+import RefreshToken, { RefreshTokenProps } from "@Domain/entities/refresh-token.entity";
+
 import { IAsyncRepository } from "./iasync-repository";
 
-export interface IRefreshTokensRepository extends IAsyncRepository<RefreshToken> {
+export interface IRefreshTokensRepository extends IAsyncRepository<RefreshToken, RefreshTokenProps> {
   getByTokenAsync(token: string): Promise<RefreshToken | null>;
 }
