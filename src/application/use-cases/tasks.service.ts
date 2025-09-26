@@ -9,7 +9,7 @@ import { IUnitOfWork } from "@Domain/abstractions/repositories/iunit-of-work";
 import { ComparisonOperator, FilterDescriptor, PagedResult, Pagination, Query, Sort } from "@Domain/core/query";
 import Label from "@Domain/entities/labels.entity";
 import TaskLabel from "@Domain/entities/task-label.entity";
-import Task from "@Domain/entities/task.entity";
+import Task, { TaskProps } from "@Domain/entities/task.entity";
 import DomainError, { ErrorCodes } from "@Domain/errors/domain-error";
 import EntityNotFoundError from "@Domain/errors/entity-not-found.error";
 import { SERVICE_IDENTIFIERS } from "@Domain/service-identifiers";
@@ -73,17 +73,17 @@ export default class TasksService implements ITasksService {
   }
 
   async searchAsync(baseRequest: BaseRequestDto<QueryDto>): Promise<PagedResult<TaskResponseDto>> {
-    const query: Query<Task> = {
+    const query: Query<TaskProps> = {
       filters: this.parseFilters(baseRequest.data.filters),
       sorts: this.parseSorts(baseRequest.data.sorts),
       pagination: this.getPagination(baseRequest.data.page, baseRequest.data.pageSize),
     };
-    const userFilter: FilterDescriptor<Task> = {
+    const userFilter: FilterDescriptor<TaskProps> = {
       field: "createdBy",
       operator: "eq",
       value: baseRequest.userId,
     };
-    const isActiveFilter: FilterDescriptor<Task> = {
+    const isActiveFilter: FilterDescriptor<TaskProps> = {
       field: "isActive",
       operator: "eq",
       value: true,
@@ -122,18 +122,18 @@ export default class TasksService implements ITasksService {
     });
   }
 
-  private parseFilters(rawFilters: ApiFilterParam[]): FilterDescriptor<Task>[] {
-    const filters: FilterDescriptor<Task>[] = rawFilters.map((f) => ({
-      field: f.field as keyof Task,
+  private parseFilters(rawFilters: ApiFilterParam[]): FilterDescriptor<TaskProps>[] {
+    const filters: FilterDescriptor<TaskProps>[] = rawFilters.map((f) => ({
+      field: f.field as keyof TaskProps,
       operator: f.operator as ComparisonOperator,
-      value: f.value as Task[keyof Task],
+      value: f.value as TaskProps[keyof TaskProps],
     }));
     return filters;
   }
 
-  private parseSorts(rawSorts: ApiSortParam[]): Sort<Task>[] {
+  private parseSorts(rawSorts: ApiSortParam[]): Sort<TaskProps>[] {
     return rawSorts.map((s) => ({
-      field: s.field as keyof Task,
+      field: s.field as keyof TaskProps,
       direction: s.direction as "asc" | "desc",
     }));
   }
