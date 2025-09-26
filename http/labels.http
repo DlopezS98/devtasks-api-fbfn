@@ -12,3 +12,12 @@ Content-Type: application/json
   "name": "New Label",
   "color": "#FF0000"
 }
+
+### Create label with auto-generated color
+POST {{baseUrl}}/labels HTTP/1.1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Development"
+}
