@@ -1,8 +1,9 @@
 /* eslint-disable require-jsdoc */
 import { IAsyncRepository } from "@Domain/abstractions/repositories/iasync-repository";
-import BaseEntity from "@Domain/entities/base-entity";
+import BaseEntity, { BaseEntityProps } from "@Domain/entities/base-entity";
 import { CollectionReference } from "firebase-admin/firestore";
 import { FilterDescriptor, PagedResult, Query } from "@Domain/core/query";
+import { ICustomFirestoreConverter } from "@Infrastructure/asbtractions/icustom-firestore-converter";
 
 import FactoryConverter from "../converters/factory-converter";
 
@@ -12,12 +13,16 @@ import UnitOfWork from "./unit-of-work";
  * Generic Firestore repository implementation.
  * This class provides basic CRUD operations for entities of type TEntity.
  */
-export default class FirestoreRepository<TEntity extends BaseEntity> implements IAsyncRepository<TEntity> {
+export default class FirestoreRepository<TEntity extends BaseEntity, TProps extends BaseEntityProps>
+  implements IAsyncRepository<TEntity> {
+  protected readonly converter: ICustomFirestoreConverter<TEntity, TProps>;
   constructor(
     protected readonly firestore: FirebaseFirestore.Firestore,
     protected readonly uow: UnitOfWork,
     private readonly entityFactory: () => TEntity,
-  ) {}
+  ) {
+    this.converter = FactoryConverter.createConverter(this.entityFactory());
+  }
 
   async addAsync(entity: TEntity): Promise<TEntity>;
   async addAsync(entities: TEntity[]): Promise<TEntity[]>;
@@ -65,7 +70,8 @@ export default class FirestoreRepository<TEntity extends BaseEntity> implements 
   }
 
   private updateSingle(entity: TEntity): void {
-    this.uow.update(this.collectionRef().doc(entity.id), entity);
+    const plainEntity = this.converter.toUpdateObject(entity);
+    this.uow.update(this.collectionRef().doc(entity.id), plainEntity);
   }
 
   async deleteAsync(entity: TEntity): Promise<void>;
@@ -202,6 +208,6 @@ export default class FirestoreRepository<TEntity extends BaseEntity> implements 
 
   protected collectionRef(): CollectionReference<TEntity> {
     const entity = this.entityFactory();
-    return this.firestore.collection(entity.namespace).withConverter(FactoryConverter.createConverter(entity));
+    return this.firestore.collection(entity.namespace).withConverter(this.converter);
   }
 }

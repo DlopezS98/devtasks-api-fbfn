@@ -1,5 +1,5 @@
 import { IUnitOfWork } from "@Domain/abstractions/repositories/iunit-of-work";
-import BaseEntity from "@Domain/entities/base-entity";
+import BaseEntity, { BaseEntityProps } from "@Domain/entities/base-entity";
 import { DocumentReference, Precondition, UpdateData } from "firebase-admin/firestore";
 import { IUsersRepository } from "@Domain/abstractions/repositories/iusers-repository";
 import { IRefreshTokensRepository } from "@Domain/abstractions/repositories/irefresh-tokens-repository";
@@ -50,15 +50,15 @@ export default class UnitOfWork implements IUnitOfWork {
     this.pendingOperations++;
   }
 
-  public update<TEntity extends BaseEntity>(
+  public update<TEntity extends BaseEntity, TProps extends BaseEntityProps>(
     ref: DocumentReference<TEntity>,
-    entity: Partial<TEntity>,
+    entity: UpdateData<TProps>,
     precondition?: Precondition,
   ): void {
     if (this.transaction) {
-      this.transaction.update(ref, entity as UpdateData<TEntity>, precondition);
+      this.transaction.update(ref, entity, precondition);
     } else if (this.batch) {
-      this.batch.update(ref, entity as UpdateData<TEntity>, precondition);
+      this.batch.update(ref, entity, precondition);
     } else {
       throw new Error("No active batch or transaction");
     }
