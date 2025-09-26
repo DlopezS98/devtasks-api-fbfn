@@ -5,6 +5,7 @@ import BaseEntity, { BaseEntityProps } from "./base-entity";
 export interface LabelProps extends BaseEntityProps {
   id: string;
   name: string;
+  normalizedName: NormalizedName;
   color: string;
   createdAt: Date;
   updatedAt: Date | null;
@@ -28,7 +29,7 @@ export default class Label extends BaseEntity implements LabelProps {
     return NormalizedName.create(this.name);
   }
 
-  constructor(props: Omit<LabelProps, "namespace">) {
+  constructor(props: Omit<LabelProps, "namespace" | "normalizedName">) {
     super(props.id);
     this.name = props.name;
     this.color = props.color;

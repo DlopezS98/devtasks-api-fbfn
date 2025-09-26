@@ -1,10 +1,22 @@
 import * as admin from "firebase-admin";
-import Label from "@Domain/entities/labels.entity";
-import { FirestoreDataConverter } from "firebase-admin/firestore";
+import Label, { LabelProps } from "@Domain/entities/labels.entity";
+import { ICustomFirestoreConverter } from "@Infrastructure/asbtractions/icustom-firestore-converter";
+import { UpdateData } from "firebase-admin/firestore";
 
 import FirestoreUtils from "../firestore.utils";
 
-export default class LabelConverter implements FirestoreDataConverter<Label> {
+export default class LabelConverter implements ICustomFirestoreConverter<Label, LabelProps> {
+  toUpdateObject(model: Label): UpdateData<LabelProps> {
+    return {
+      id: model.id,
+      name: model.name,
+      normalizedName: model.normalizedName.getValue(),
+      color: model.color,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp() as unknown as Date,
+      isActive: model.isActive,
+    };
+  }
+
   toFirestore(entity: Label): FirebaseFirestore.DocumentData {
     return {
       name: entity.name,
