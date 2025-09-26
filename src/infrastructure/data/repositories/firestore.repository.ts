@@ -109,8 +109,8 @@ export default class FirestoreRepository<TEntity extends BaseEntity> implements 
     // Get total count (without pagination)
     // For efficiency, if no filters, use count from collection
     let totalCount: number;
-    if (query.filter && query.filter.length > 0) {
-      const countSnapshot = await this.applyQueryConstraints({ filter: query.filter }).count().get();
+    if (query.filters && query.filters.length > 0) {
+      const countSnapshot = await this.applyQueryConstraints({ filters: query.filters }).count().get();
       totalCount = countSnapshot.data().count;
     } else {
       const collectionSnapshot = await this.collectionRef().count().get();
@@ -129,8 +129,8 @@ export default class FirestoreRepository<TEntity extends BaseEntity> implements 
     let firestoreQuery: FirebaseFirestore.Query<TEntity> = this.collectionRef();
 
     // Apply filtering
-    if (query.filter) {
-      this.applyFilters(firestoreQuery, query.filter);
+    if (query.filters) {
+      this.applyFilters(firestoreQuery, query.filters);
     }
 
     // Apply sorting

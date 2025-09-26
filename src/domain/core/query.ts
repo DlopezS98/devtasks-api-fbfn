@@ -15,7 +15,8 @@ export interface Sort<T> {
   direction: "asc" | "desc";
 }
 
-export type ComparisonOperator = "eq" | "ne" | "gt" | "lt" | "gte" | "lte" | "in" | "nin" | "contains";
+export const OperatorSchema = ["eq", "ne", "gt", "lt", "gte", "lte", "in", "nin", "contains"] as const;
+export type ComparisonOperator = (typeof OperatorSchema)[number];
 
 export interface FilterDescriptor<TCandidate> {
   field: keyof TCandidate;
@@ -24,7 +25,7 @@ export interface FilterDescriptor<TCandidate> {
 }
 
 export interface Query<TCandidate> {
-  filter?: FilterDescriptor<TCandidate>[];
+  filters?: FilterDescriptor<TCandidate>[];
   sort?: Sort<TCandidate>[];
   pagination?: Pagination;
 }
