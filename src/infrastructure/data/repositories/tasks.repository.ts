@@ -34,6 +34,7 @@ export default class TasksRepository extends FirestoreRepository<Task, TaskProps
 
   private addTaskLabel(entity: Task, label: TaskLabel): TaskLabel {
     label.id = this.getTaskLabelCollectionRef(entity.id).doc().id;
+    label.taskId = entity.id;
     const labelRef = this.getTaskLabelCollectionRef(entity.id).doc(label.id);
     this.uow.set(labelRef, label);
     return label;
