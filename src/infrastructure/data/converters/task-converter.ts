@@ -11,7 +11,6 @@ import FirestoreUtils from "../firestore.utils";
 export default class TaskConverter implements ICustomFirestoreConverter<Task, TaskProps> {
   toUpdateObject(model: Task): UpdateData<TaskProps> {
     return {
-      id: model.id,
       title: model.title,
       description: model.description,
       status: model.status.getValue(),

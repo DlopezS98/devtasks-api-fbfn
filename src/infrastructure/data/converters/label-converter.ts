@@ -8,7 +8,6 @@ import FirestoreUtils from "../firestore.utils";
 export default class LabelConverter implements ICustomFirestoreConverter<Label, LabelProps> {
   toUpdateObject(model: Label): UpdateData<LabelProps> {
     return {
-      id: model.id,
       name: model.name,
       normalizedName: model.normalizedName.getValue(),
       color: model.color,
