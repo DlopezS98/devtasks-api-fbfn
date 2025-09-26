@@ -40,8 +40,25 @@ export default class TasksRepository extends FirestoreRepository<Task> implement
   }
 
   async getByUserAsync(userId: string): Promise<Task[]> {
-    const querySnapshot = await this.collectionRef().where("userId", "==", userId).get();
-    return querySnapshot.docs.map((doc) => doc.data());
+    const querySnapshot = await this.collectionRef()
+      .where("userId", "==", userId)
+      .where("isActive", "==", true)
+      .get();
+
+    if (querySnapshot.empty) return [];
+
+    const tasks = querySnapshot.docs.map((doc) => doc.data());
+    const taskIds = tasks.map((t) => t.id);
+
+    // Fetch labels for each task in parallel
+    await Promise.all(
+      tasks.map(async (task, idx) => {
+        const labelSnapshot = await this.getTaskLabelCollectionRef(taskIds[idx]).get();
+        labelSnapshot.docs.forEach((doc) => task.addTaskLabel(doc.data()));
+      })
+    );
+
+    return tasks;
   }
 
   override async getAsync(id: string): Promise<Task | null> {
