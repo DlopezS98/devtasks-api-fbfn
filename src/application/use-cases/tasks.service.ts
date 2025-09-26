@@ -91,7 +91,35 @@ export default class TasksService implements ITasksService {
     query.filters?.push(userFilter);
     query.filters?.push(isActiveFilter);
     const { items, totalCount, skip, take } = await this.unitOfWork.tasksRepository.queryAsync(query);
-    return { items: items.map(this.mapTaskToDto), totalCount, skip, take };
+
+    const taskDtos = await this.mapTasksWithLabels(items);
+    return { items: taskDtos, totalCount, skip, take };
+  }
+
+  /**
+   * Maps tasks to their DTOs and attaches their labels efficiently.
+   * @param {Task[]} tasks Array of Task entities
+   * @return {Promise<TaskResponseDto[]>} Array of TaskResponseDto with labels populated
+   */
+  private async mapTasksWithLabels(tasks: Task[]): Promise<TaskResponseDto[]> {
+    const taskLabelMap = new Map<string, string[]>();
+    const labelIdSet = new Set<string>();
+    tasks.forEach((task) => {
+      taskLabelMap.set(task.id, task.taskLabels.map((tl) => tl.labelId));
+      task.taskLabels.forEach((tl) => labelIdSet.add(tl.labelId));
+    });
+    const labelIds = Array.from(labelIdSet);
+    if (labelIds.length === 0) return tasks.map((task) => this.mapTaskToDto(task));
+
+    const labels = await this.unitOfWork.labelsRepository.getByIdsAsync(labelIds);
+    const labelsMap = new Map(labels.map((label) => [label.id, this.mapLabelToDto(label)]));
+
+    return tasks.map((item) => {
+      const taskDto = this.mapTaskToDto(item);
+      const labelDtos = taskLabelMap.get(item.id)?.map((labelId) => labelsMap.get(labelId)).filter(Boolean) || [];
+      taskDto.labels = labelDtos as LabelResponseDto[];
+      return taskDto;
+    });
   }
 
   private parseFilters(rawFilters: ApiFilterParam[]): FilterDescriptor<Task>[] {
