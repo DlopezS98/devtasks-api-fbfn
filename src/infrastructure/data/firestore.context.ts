@@ -1,9 +1,7 @@
-import BaseEntity from "@Domain/entities/base-entity";
 import * as admin from "firebase-admin";
 import { injectable } from "inversify";
 
 // import serviceAccount from "../../../devtasks-serviceaccount.json";
-import FactoryConverter from "./converters/factory-converter";
 
 /**
  * Firebase configuration class.
@@ -15,7 +13,6 @@ export default class FirestoreContext {
   private static instance: FirestoreContext;
   private readonly fbApp: admin.app.App;
 
-  // eslint-disable-next-line require-jsdoc
   private constructor() {
     this.fbApp = admin.initializeApp({ credential: admin.credential.applicationDefault() }, "DevTasksApi");
     // this.fbApp = admin.initializeApp(
@@ -49,12 +46,5 @@ export default class FirestoreContext {
    */
   public static initializeApp(): admin.app.App {
     return FirestoreContext.getInstance().fbApp;
-  }
-
-  // eslint-disable-next-line require-jsdoc
-  public getCollection<TEntity extends BaseEntity>(entity: TEntity): admin.firestore.CollectionReference<TEntity> {
-    return this.fbApp.firestore()
-      .collection(entity.namespace)
-      .withConverter(FactoryConverter.createConverter<TEntity>(entity));
   }
 }
