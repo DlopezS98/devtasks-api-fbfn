@@ -26,6 +26,6 @@ export interface FilterDescriptor<TCandidate> {
 
 export interface Query<TCandidate> {
   filters?: FilterDescriptor<TCandidate>[];
-  sort?: Sort<TCandidate>[];
+  sorts?: Sort<TCandidate>[];
   pagination?: Pagination;
 }

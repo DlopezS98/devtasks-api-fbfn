@@ -134,8 +134,8 @@ export default class FirestoreRepository<TEntity extends BaseEntity> implements 
     }
 
     // Apply sorting
-    if (query.sort) {
-      query.sort.forEach((sort) => {
+    if (query.sorts) {
+      query.sorts.forEach((sort) => {
         firestoreQuery = firestoreQuery.orderBy(sort.field as string, sort.direction);
       });
     }
