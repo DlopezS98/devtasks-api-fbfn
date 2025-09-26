@@ -22,7 +22,7 @@ export default class LabelConverter implements ICustomFirestoreConverter<Label, 
       normalizedName: entity.normalizedName.getValue(),
       color: entity.color,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: entity.updatedAt ? admin.firestore.FieldValue.serverTimestamp() : null,
+      updatedAt: null,
       createdBy: entity.createdBy,
       isActive: entity.isActive,
     };

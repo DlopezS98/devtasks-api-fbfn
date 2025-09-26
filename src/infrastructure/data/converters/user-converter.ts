@@ -14,7 +14,7 @@ export default class UserConverter implements FirestoreDataConverter<User> {
       passwordSalt: entity.passwordSalt,
       isActive: entity.isActive,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: entity.updatedAt ? admin.firestore.FieldValue.serverTimestamp() : null,
+      updatedAt: null,
     };
   }
 
