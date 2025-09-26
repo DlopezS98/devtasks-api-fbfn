@@ -1,8 +1,8 @@
 import NormalizedName from "@Domain/value-objects/normalized-name";
 
-import BaseEntity from "./base-entity";
+import BaseEntity, { BaseEntityProps } from "./base-entity";
 
-export interface ILabelProps {
+export interface LabelProps extends BaseEntityProps {
   id: string;
   name: string;
   color: string;
@@ -12,7 +12,7 @@ export interface ILabelProps {
   isActive: boolean;
 }
 
-export default class Label extends BaseEntity implements ILabelProps {
+export default class Label extends BaseEntity implements LabelProps {
   public get namespace(): string {
     return "Labels";
   }
@@ -28,7 +28,7 @@ export default class Label extends BaseEntity implements ILabelProps {
     return NormalizedName.create(this.name);
   }
 
-  constructor(props: ILabelProps) {
+  constructor(props: Omit<LabelProps, "namespace">) {
     super(props.id);
     this.name = props.name;
     this.color = props.color;
