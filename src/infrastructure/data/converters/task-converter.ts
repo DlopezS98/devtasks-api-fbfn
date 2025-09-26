@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import Task, { ITaskProps } from "@Domain/entities/task.entity";
+import Task, { TaskProps } from "@Domain/entities/task.entity";
 import { FirestoreDataConverter, UpdateData } from "firebase-admin/firestore";
 import * as admin from "firebase-admin";
 import TaskLabel from "@Domain/entities/task-label.entity";
@@ -8,8 +8,8 @@ import { ICustomFirestoreConverter } from "@Infrastructure/asbtractions/icustom-
 
 import FirestoreUtils from "../firestore.utils";
 
-export default class TaskConverter implements ICustomFirestoreConverter<Task, ITaskProps> {
-  toUpdateObject(model: Task): UpdateData<ITaskProps> {
+export default class TaskConverter implements ICustomFirestoreConverter<Task, TaskProps> {
+  toUpdateObject(model: Task): UpdateData<TaskProps> {
     return {
       id: model.id,
       namespace: model.namespace,

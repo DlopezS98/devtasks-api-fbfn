@@ -3,7 +3,7 @@ import TaskStatus, { TaskStatuses } from "../value-objects/task-status";
 import BaseEntity, { BaseEntityProps } from "./base-entity";
 import TaskLabel from "./task-label.entity";
 
-export interface ITaskProps extends BaseEntityProps {
+export interface TaskProps extends BaseEntityProps {
   title: string;
   description: string;
   status: TaskStatus;
@@ -16,7 +16,7 @@ export interface ITaskProps extends BaseEntityProps {
   isActive: boolean;
 }
 
-export default class Task extends BaseEntity implements ITaskProps {
+export default class Task extends BaseEntity implements TaskProps {
   public get namespace(): string {
     return "Tasks";
   }
@@ -36,7 +36,7 @@ export default class Task extends BaseEntity implements ITaskProps {
   }
   private _taskLabels: TaskLabel[] = [];
 
-  constructor(props: Omit<ITaskProps, "taskLabels" | "namespace">) {
+  constructor(props: Omit<TaskProps, "taskLabels" | "namespace">) {
     super(props.id);
     this.title = props.title;
     this.description = props.description;
@@ -86,7 +86,7 @@ export default class Task extends BaseEntity implements ITaskProps {
     });
   }
 
-  static create(props: Pick<ITaskProps, "title" | "description" | "status" | "priority" | "createdBy">): Task {
+  static create(props: Pick<TaskProps, "title" | "description" | "status" | "priority" | "createdBy">): Task {
     return new Task({
       id: "", // entity generated value
       title: props.title,
