@@ -1,12 +1,11 @@
-import TasksRepository from "@Infrastructure/data/repositories/tasks.repository";
-
 import { IUsersRepository } from "./iusers-repository";
 import { IRefreshTokensRepository } from "./irefresh-tokens-repository";
 import { ILabelsRepository } from "./ilabels-repository";
+import { ITasksRepository } from "./itasks-repository";
 
 export interface IUnitOfWork {
   readonly usersRepository: IUsersRepository;
-  readonly tasksRepository: TasksRepository;
+  readonly tasksRepository: ITasksRepository;
   readonly labelsRepository: ILabelsRepository;
   readonly refreshTokensRepository: IRefreshTokensRepository;
 
