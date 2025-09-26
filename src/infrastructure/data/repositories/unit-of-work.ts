@@ -56,9 +56,9 @@ export default class UnitOfWork implements IUnitOfWork {
     precondition?: Precondition,
   ): void {
     if (this.transaction) {
-      this.transaction.update(ref, entity, precondition);
+      precondition ? this.transaction.update(ref, entity, precondition) : this.transaction.update(ref, entity);
     } else if (this.batch) {
-      this.batch.update(ref, entity, precondition);
+      precondition ? this.batch.update(ref, entity, precondition) : this.batch.update(ref, entity);
     } else {
       throw new Error("No active batch or transaction");
     }
