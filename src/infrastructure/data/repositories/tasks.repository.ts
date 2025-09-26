@@ -33,7 +33,7 @@ export default class TasksRepository extends FirestoreRepository<Task> implement
   }
 
   private addTaskLabel(entity: Task, label: TaskLabel): TaskLabel {
-    label.id = this.collectionRef().doc(entity.id).collection("labels").doc().id;
+    label.id = this.getTaskLabelCollectionRef(entity.id).doc().id;
     const labelRef = this.getTaskLabelCollectionRef(entity.id).doc(label.id);
     this.uow.set(labelRef, label);
     return label;
@@ -68,6 +68,19 @@ export default class TasksRepository extends FirestoreRepository<Task> implement
     const labelSnapshot = await this.getTaskLabelCollectionRef(id).get();
     labelSnapshot.docs.forEach((doc) => task.addTaskLabel(doc.data()));
     return task;
+  }
+
+  addLabelAsync(label: TaskLabel): Promise<void> {
+    label.id = this.getTaskLabelCollectionRef(label.taskId).doc().id;
+    const labelRef = this.getTaskLabelCollectionRef(label.taskId).doc(label.id);
+    this.uow.set(labelRef, label);
+    return Promise.resolve();
+  }
+
+  removeLabelAsync(label: TaskLabel): Promise<void> {
+    const labelRef = this.getTaskLabelCollectionRef(label.taskId).doc(label.id);
+    this.uow.delete(labelRef);
+    return Promise.resolve();
   }
 
   private getTaskLabelCollectionRef(taskId: string) {
