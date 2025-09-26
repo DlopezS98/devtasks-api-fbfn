@@ -1,8 +1,8 @@
 import { PagedResult, Query } from "@Domain/core/query";
 
-import BaseEntity from "../../entities/base-entity";
+import BaseEntity, { BaseEntityProps } from "../../entities/base-entity";
 
-export interface IAsyncRepository<TEntity extends BaseEntity> {
+export interface IAsyncRepository<TEntity extends BaseEntity, TProps extends BaseEntityProps> {
   addAsync(entity: TEntity): Promise<TEntity>;
   addAsync(entities: TEntity[]): Promise<TEntity[]>;
   getAsync(id: string): Promise<TEntity | null>;
@@ -16,5 +16,5 @@ export interface IAsyncRepository<TEntity extends BaseEntity> {
    * Basic filtering by AND conditions only.
    * @param query The query object containing filtering, sorting, and pagination parameters.
    */
-  queryAsync(query: Query<TEntity>): Promise<PagedResult<TEntity>>;
+  queryAsync(query: Query<TProps>): Promise<PagedResult<TEntity>>;
 }

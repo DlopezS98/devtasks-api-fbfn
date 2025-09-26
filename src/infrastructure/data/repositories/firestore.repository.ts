@@ -14,7 +14,7 @@ import UnitOfWork from "./unit-of-work";
  * This class provides basic CRUD operations for entities of type TEntity.
  */
 export default class FirestoreRepository<TEntity extends BaseEntity, TProps extends BaseEntityProps>
-  implements IAsyncRepository<TEntity> {
+  implements IAsyncRepository<TEntity, TProps> {
   protected readonly converter: ICustomFirestoreConverter<TEntity, TProps>;
   constructor(
     protected readonly firestore: FirebaseFirestore.Firestore,
@@ -99,7 +99,7 @@ export default class FirestoreRepository<TEntity extends BaseEntity, TProps exte
     return querySnapshot.docs.map((doc) => doc.data());
   }
 
-  async queryAsync(query: Query<TEntity>): Promise<PagedResult<TEntity>> {
+  async queryAsync(query: Query<TProps>): Promise<PagedResult<TEntity>> {
     const firestoreQuery = this.applyQueryConstraints(query);
     const querySnapshot = await firestoreQuery.get();
 
@@ -131,7 +131,7 @@ export default class FirestoreRepository<TEntity extends BaseEntity, TProps exte
     };
   }
 
-  protected applyQueryConstraints(query: Query<TEntity>): FirebaseFirestore.Query<TEntity> {
+  protected applyQueryConstraints(query: Query<TProps>): FirebaseFirestore.Query<TEntity> {
     let firestoreQuery: FirebaseFirestore.Query<TEntity> = this.collectionRef();
 
     // Apply filtering
@@ -162,7 +162,7 @@ export default class FirestoreRepository<TEntity extends BaseEntity, TProps exte
   // apply filters
   protected applyFilters(
     firestoreQuery: FirebaseFirestore.Query<TEntity>,
-    filters: FilterDescriptor<TEntity>[],
+    filters: FilterDescriptor<TProps>[],
   ): FirebaseFirestore.Query<TEntity> {
     for (const filter of filters) {
       switch (filter.operator) {
