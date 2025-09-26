@@ -1,10 +1,9 @@
 import TaskStatus, { TaskStatuses } from "../value-objects/task-status";
 
-import BaseEntity from "./base-entity";
+import BaseEntity, { BaseEntityProps } from "./base-entity";
 import TaskLabel from "./task-label.entity";
 
-export interface ITaskProps {
-  id: string;
+export interface ITaskProps extends BaseEntityProps {
   title: string;
   description: string;
   status: TaskStatus;
@@ -37,7 +36,7 @@ export default class Task extends BaseEntity implements ITaskProps {
   }
   private _taskLabels: TaskLabel[] = [];
 
-  constructor(props: Omit<ITaskProps, "taskLabels">) {
+  constructor(props: Omit<ITaskProps, "taskLabels" | "namespace">) {
     super(props.id);
     this.title = props.title;
     this.description = props.description;
