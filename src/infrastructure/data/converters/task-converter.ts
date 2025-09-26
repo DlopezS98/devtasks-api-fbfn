@@ -1,13 +1,26 @@
 /* eslint-disable require-jsdoc */
-import Task from "@Domain/entities/task.entity";
-import { FirestoreDataConverter } from "firebase-admin/firestore";
+import Task, { ITaskProps } from "@Domain/entities/task.entity";
+import { FirestoreDataConverter, UpdateData } from "firebase-admin/firestore";
 import * as admin from "firebase-admin";
 import TaskLabel from "@Domain/entities/task-label.entity";
 import TaskStatus from "@Domain/value-objects/task-status";
+import { ICustomFirestoreConverter } from "@Infrastructure/asbtractions/icustom-firestore-converter";
 
 import FirestoreUtils from "../firestore.utils";
 
-export default class TaskConverter implements FirestoreDataConverter<Task> {
+export default class TaskConverter implements ICustomFirestoreConverter<Task, ITaskProps> {
+  toUpdateObject(model: Task): UpdateData<ITaskProps> {
+    return {
+      id: model.id,
+      namespace: model.namespace,
+      createdAt: model.createdAt,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      completedAt: model.completedAt,
+      createdBy: model.createdBy,
+      isActive: model.isActive,
+    };
+  }
+
   toFirestore(model: Task): FirebaseFirestore.DocumentData {
     return {
       title: model.title,
@@ -15,7 +28,7 @@ export default class TaskConverter implements FirestoreDataConverter<Task> {
       status: model.status.getValue(),
       priority: model.priority,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: model.updatedAt ? admin.firestore.FieldValue.serverTimestamp() : null,
+      updatedAt: null,
       completedAt: model.completedAt ? admin.firestore.FieldValue.serverTimestamp() : null,
       createdBy: model.createdBy,
       isActive: model.isActive,
