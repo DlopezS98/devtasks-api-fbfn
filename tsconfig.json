@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "skipLibCheck": true,
     "typeRoots": ["./node_modules/@types", "./src/api/types"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -24,5 +25,9 @@
   "compileOnSave": true,
   "include": [
     "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
   ]
 }
