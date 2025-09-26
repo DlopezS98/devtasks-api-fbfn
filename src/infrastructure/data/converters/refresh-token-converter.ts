@@ -9,14 +9,7 @@ import FirestoreUtils from "../firestore.utils";
 export default class RefreshTokenConverter implements ICustomFirestoreConverter<RefreshToken, RefreshTokenProps> {
   toUpdateObject(model: RefreshToken): UpdateData<RefreshTokenProps> {
     return {
-      userId: model.userId,
-      tokenHash: model.tokenHash,
-      expiresAt: model.expiresAt,
-      createdAt: model.createdAt,
-      revokedAt: model.revokedAt,
-      createdByIp: model.createdByIp,
-      userAgent: model.userAgent,
-      deviceName: model.deviceName,
+      revokedAt: model.revokedAt ? admin.firestore.FieldValue.serverTimestamp() : null,
     };
   }
 
@@ -27,7 +20,7 @@ export default class RefreshTokenConverter implements ICustomFirestoreConverter<
       createdByIp: entity.createdByIp,
       userAgent: entity.userAgent,
       deviceName: entity.deviceName,
-      revokedAt: entity.revokedAt ? admin.firestore.FieldValue.serverTimestamp() : null,
+      revokedAt: null,
       expiresAt: entity.expiresAt,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     };
