@@ -18,7 +18,8 @@ export default class LabelsService implements ILabelsService {
     const existingLabel = await this.unitOfWork.labelsRepository.getByNameAsync(request.data.name);
     if (existingLabel) throw new Error("Label with the same name already exists.");
 
-    const color = this.generateRandomColor(request.data.name);
+    // Use provided color or generated one
+    const color = request.data.color ?? this.generateRandomColor(request.data.name);
     const label = Label.create(request.data.name, color, request.userId);
     const newLabel = await this.unitOfWork.labelsRepository.addAsync(label);
     await this.unitOfWork.saveChangesAsync();
