@@ -14,6 +14,7 @@ export interface ITaskProps {
   taskLabels: TaskLabel[];
   priority: number;
   createdBy: string;
+  isActive: boolean;
 }
 
 export default class Task extends BaseEntity implements ITaskProps {
@@ -29,6 +30,7 @@ export default class Task extends BaseEntity implements ITaskProps {
   completedAt: Date | null = null;
   priority = 0;
   createdBy = "";
+  isActive = true;
 
   get taskLabels() {
     return this._taskLabels;
@@ -45,6 +47,7 @@ export default class Task extends BaseEntity implements ITaskProps {
     this.completedAt = props.completedAt;
     this.priority = props.priority;
     this.createdBy = props.createdBy;
+    this.isActive = props.isActive;
   }
 
 
@@ -80,6 +83,7 @@ export default class Task extends BaseEntity implements ITaskProps {
       completedAt: null,
       priority: 0,
       createdBy: "",
+      isActive: false,
     });
   }
 
@@ -94,6 +98,7 @@ export default class Task extends BaseEntity implements ITaskProps {
       completedAt: null,
       priority: props.priority,
       createdBy: props.createdBy,
+      isActive: true,
     });
   }
 }
