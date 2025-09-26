@@ -29,8 +29,11 @@ export default class TasksService implements ITasksService {
       createdBy: request.userId,
     });
     const labelIds = request.data.labelIds ?? [];
-    const labels = await this.unitOfWork.labelsRepository.getByIdsAsync(labelIds);
-    if (labels.length !== labelIds.length) throw new Error("One or more labels not found");
+    let labels: Label[] = [];
+    if (labelIds.length > 0) {
+      labels = await this.unitOfWork.labelsRepository.getByIdsAsync(labelIds);
+      if (labels.length !== labelIds.length) throw new Error("One or more labels not found");
+    }
 
     labelIds.forEach(newTask.addTaskLabel.bind(newTask));
 
