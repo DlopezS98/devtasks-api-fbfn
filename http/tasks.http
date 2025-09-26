@@ -1,4 +1,4 @@
-@taskId = "replace-with-task-id"
+@taskId = tlkIJNiCYaObOfmkT8Jq
 @labelId = "replace-with-label-id"
 
 POST {{baseUrl}}/tasks HTTP/1.1
@@ -6,9 +6,9 @@ Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
-  "title": "New Task - 1",
+  "title": "New Task - 2",
   "description": "Task description",
-  "status": "Draft"
+  "status": "ToDo"
 }
 
 ### Create Task with Labels
@@ -38,7 +38,7 @@ Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 ### Search Tasks
-GET {{baseUrl}}/tasks?filter=status:eq:Draft&sort=createdAt:desc&page=1&pageSize=10 HTTP/1.1
+GET {{baseUrl}}/tasks?sort=createdAt:desc&page=1&pageSize=10 HTTP/1.1
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
