@@ -5,6 +5,7 @@ import { ITasksService } from "@Application/abstractions/itasks.service";
 import { SERVICE_IDENTIFIERS } from "@Application/service-identifiers";
 import { BaseRequestDto } from "@Application/dtos/request/base-request.dto";
 import { CreateTaskRequestDto } from "@Application/dtos/request/task.dto";
+import { QueryDto } from "@Application/dtos/request/query.dto";
 
 import BaseApiController from "./base-api.controller";
 
@@ -29,6 +30,19 @@ export default class TasksController extends BaseApiController {
       const request: BaseRequestDto<CreateTaskRequestDto> = { userId: user.id, data: req.body };
       const task = await this.tasksService.createAsync(request);
       res.status(201).json(task);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
+      res.status(500).json({ error: message });
+    }
+  }
+
+  async searchTasksAsync(req: Request, res: Response) {
+    try {
+      const query = this.generateQuery(req);
+      const userId = this.getCurrentUser(req).id;
+      const baseRequest: BaseRequestDto<QueryDto> = { userId, data: query };
+      const result = await this.tasksService.searchAsync(baseRequest);
+      res.status(200).json(result);
     } catch (error) {
       const message = error instanceof Error ? error.message : "An unexpected error occurred.";
       res.status(500).json({ error: message });
