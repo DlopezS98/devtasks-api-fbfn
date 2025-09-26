@@ -1,4 +1,5 @@
 import BaseEntity, { BaseEntityProps } from "@Domain/entities/base-entity";
+import { UpdateData } from "firebase-admin/firestore";
 
 export interface ICustomFirestoreConverter<TEntity extends BaseEntity, TProps extends BaseEntityProps>
   extends FirebaseFirestore.FirestoreDataConverter<TEntity> {
@@ -7,5 +8,5 @@ export interface ICustomFirestoreConverter<TEntity extends BaseEntity, TProps ex
    * @param {TEntity} model The Task model to convert
    * @return {Partial<TProps>} The plain object representation of the Task model.
    */
-  toUpdateObject(model: TEntity): Partial<TProps>;
+  toUpdateObject(model: TEntity): UpdateData<TProps>;
 }
