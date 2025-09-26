@@ -1,5 +1,5 @@
 import { ITasksRepository } from "@Domain/abstractions/repositories/itasks-repository";
-import Task from "@Domain/entities/task.entity";
+import Task, { ITaskProps } from "@Domain/entities/task.entity";
 import TaskLabel from "@Domain/entities/task-label.entity";
 
 import FactoryConverter from "../converters/factory-converter";
@@ -7,7 +7,7 @@ import FactoryConverter from "../converters/factory-converter";
 import FirestoreRepository from "./firestore.repository";
 import UnitOfWork from "./unit-of-work";
 
-export default class TasksRepository extends FirestoreRepository<Task> implements ITasksRepository {
+export default class TasksRepository extends FirestoreRepository<Task, ITaskProps> implements ITasksRepository {
   constructor(firestore: FirebaseFirestore.Firestore, uow: UnitOfWork) {
     super(firestore, uow, () => Task.empty());
   }
