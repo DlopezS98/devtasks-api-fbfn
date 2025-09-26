@@ -59,7 +59,7 @@ export default class TaskStatus extends ValueObject<TaskStatusProps> {
    * @param {TaskStatuses} newStatus The new status to transition to.
    * @return {Boolean} True if the transition is valid, otherwise false.
    */
-  public canTransitionTo = (newStatus: TaskStatuses): boolean => {
+  public canTransitionTo = (newStatus: TaskStatus): boolean => {
     const transitions: Record<TaskStatuses, TaskStatuses[]> = {
       [TaskStatuses.Draft]: [TaskStatuses.ToDo],
       [TaskStatuses.ToDo]: [TaskStatuses.InProgress, TaskStatuses.Done],
@@ -67,6 +67,6 @@ export default class TaskStatus extends ValueObject<TaskStatusProps> {
       [TaskStatuses.Done]: [TaskStatuses.InProgress],
     };
 
-    return transitions[this.props.value].includes(newStatus);
+    return transitions[this.props.value].includes(newStatus.getValue());
   };
 }
