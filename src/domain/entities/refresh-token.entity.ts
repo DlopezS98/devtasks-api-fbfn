@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
-import BaseEntity from "./base-entity";
+import BaseEntity, { BaseEntityProps } from "./base-entity";
 
-export interface IRefreshTokenProps {
+export interface RefreshTokenProps extends BaseEntityProps {
   id: string;
   userId: string;
   tokenHash: string;
@@ -14,7 +14,7 @@ export interface IRefreshTokenProps {
   deviceName: string;
 }
 
-export default class RefreshToken extends BaseEntity implements IRefreshTokenProps {
+export default class RefreshToken extends BaseEntity implements RefreshTokenProps {
   userId: string;
   tokenHash: string;
   expiresAt: Date;
@@ -32,7 +32,7 @@ export default class RefreshToken extends BaseEntity implements IRefreshTokenPro
     return "RefreshTokens";
   }
 
-  constructor(props: Omit<IRefreshTokenProps, "isRevoked">) {
+  constructor(props: Omit<RefreshTokenProps, "isRevoked" | "namespace">) {
     super(props.id);
     this.userId = props.userId;
     this.tokenHash = props.tokenHash;
@@ -44,7 +44,7 @@ export default class RefreshToken extends BaseEntity implements IRefreshTokenPro
     this.deviceName = props.deviceName;
   }
 
-  static create(props: Omit<IRefreshTokenProps, "id" | "revokedAt" | "isRevoked" | "createdAt">): RefreshToken {
+  static create(props: Omit<RefreshTokenProps, "id" | "revokedAt" | "isRevoked" | "createdAt">): RefreshToken {
     return new RefreshToken({
       id: "", // placeholder, should be set by repository
       ...props,
