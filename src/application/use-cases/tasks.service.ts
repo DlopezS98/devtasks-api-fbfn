@@ -49,6 +49,11 @@ export default class TasksService implements ITasksService {
     if (!task) throw new EntityNotFoundError("Task");
 
     const taskDto = this.mapTaskToDto(task);
+    const labelIds = task.taskLabels.map((tl) => tl.labelId);
+    if (labelIds.length > 0) {
+      const labels = await this.unitOfWork.labelsRepository.getByIdsAsync(labelIds);
+      taskDto.labels = labels.map(this.mapLabelToDto);
+    }
     return taskDto;
   }
 
