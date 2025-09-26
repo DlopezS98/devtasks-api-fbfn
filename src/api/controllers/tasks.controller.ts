@@ -6,6 +6,7 @@ import { SERVICE_IDENTIFIERS } from "@Application/service-identifiers";
 import { BaseRequestDto } from "@Application/dtos/request/base-request.dto";
 import { CreateTaskRequestDto } from "@Application/dtos/request/task.dto";
 import { QueryDto } from "@Application/dtos/request/query.dto";
+import { UpdateTaskRequestDto } from "@Application/dtos/request/update-task.dto";
 
 import BaseApiController from "./base-api.controller";
 
@@ -54,6 +55,30 @@ export default class TasksController extends BaseApiController {
       const { taskId, labelId } = req.params;
       await this.tasksService.addLabelAsync(taskId, labelId);
       res.status(204).send();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
+      res.status(500).json({ error: message });
+    }
+  }
+
+  async deleteAsync(req: Request<{ taskId: string }>, res: Response) {
+    try {
+      const { taskId } = req.params;
+      await this.tasksService.deleteAsync(taskId);
+      res.status(204).send();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
+      res.status(500).json({ error: message });
+    }
+  }
+
+  async updateAsync(req: Request<{ taskId: string }, unknown, UpdateTaskRequestDto>, res: Response) {
+    try {
+      const { taskId } = req.params;
+      const user = this.getCurrentUser(req);
+      const request: BaseRequestDto<UpdateTaskRequestDto> = { userId: user.id, data: req.body };
+      const task = await this.tasksService.updateAsync(taskId, request);
+      res.status(200).json(task);
     } catch (error) {
       const message = error instanceof Error ? error.message : "An unexpected error occurred.";
       res.status(500).json({ error: message });
