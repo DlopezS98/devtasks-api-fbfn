@@ -7,8 +7,9 @@ import { LabelResponseDto } from "@Application/dtos/response/label.dto";
 import { inject, injectable } from "inversify";
 import { SERVICE_IDENTIFIERS } from "@Domain/service-identifiers";
 import { IUnitOfWork } from "@Domain/abstractions/repositories/iunit-of-work";
-import Label from "@Domain/entities/labels.entity";
+import Label, { LabelProps } from "@Domain/entities/labels.entity";
 import EntityNotFoundError from "@Domain/errors/entity-not-found.error";
+import { Query } from "@Domain/core/query";
 
 @injectable()
 export default class LabelsService implements ILabelsService {
@@ -43,8 +44,13 @@ export default class LabelsService implements ILabelsService {
   }
 
   async listAsync(userId: string): Promise<LabelResponseDto[]> {
-    const labels = await this.unitOfWork.labelsRepository.getByUserAsync(userId);
-    return labels.map((label) => ({
+    const query: Query<LabelProps> = {
+      filters: [{ field: "createdBy", operator: "eq", value: userId }],
+      sorts: [{ field: "createdAt", direction: "desc" }],
+    };
+
+    const result = await this.unitOfWork.labelsRepository.queryAsync(query);
+    return result.items.map((label) => ({
       id: label.id,
       name: label.name,
       color: label.color,
