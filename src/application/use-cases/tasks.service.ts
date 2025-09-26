@@ -1,9 +1,11 @@
 import { ITasksService } from "@Application/abstractions/itasks.service";
 import { BaseRequestDto } from "@Application/dtos/request/base-request.dto";
+import { ApiFilterParam, ApiSortParam, QueryDto } from "@Application/dtos/request/query.dto";
 import { CreateTaskRequestDto } from "@Application/dtos/request/task.dto";
 import { LabelResponseDto } from "@Application/dtos/response/label.dto";
 import { TaskResponseDto } from "@Application/dtos/response/task.dto";
 import { IUnitOfWork } from "@Domain/abstractions/repositories/iunit-of-work";
+import { ComparisonOperator, FilterDescriptor, PagedResult, Pagination, Query, Sort } from "@Domain/core/query";
 import Label from "@Domain/entities/labels.entity";
 import Task from "@Domain/entities/task.entity";
 import DomainError, { ErrorCodes } from "@Domain/errors/domain-error";
@@ -48,6 +50,38 @@ export default class TasksService implements ITasksService {
     if (!label) throw new EntityNotFoundError("Label");
 
     await this.unitOfWork.saveChangesAsync();
+  }
+
+  async searchAsync(baseRequest: BaseRequestDto<QueryDto>): Promise<PagedResult<TaskResponseDto>> {
+    const query: Query<Task> = {
+      filters: this.parseFilters(baseRequest.data.filters),
+      sorts: this.parseSorts(baseRequest.data.sorts),
+      pagination: this.getPagination(baseRequest.data.page, baseRequest.data.pageSize),
+    };
+    const { items, totalCount, skip, take } = await this.unitOfWork.tasksRepository.queryAsync(query);
+    return { items: items.map(this.mapTaskToDto), totalCount, skip, take };
+  }
+
+  private parseFilters(rawFilters: ApiFilterParam[]): FilterDescriptor<Task>[] {
+    const filters: FilterDescriptor<Task>[] = rawFilters.map((f) => ({
+      field: f.field as keyof Task,
+      operator: f.operator as ComparisonOperator,
+      value: f.value as Task[keyof Task],
+    }));
+    return filters;
+  }
+
+  private parseSorts(rawSorts: ApiSortParam[]): Sort<Task>[] {
+    return rawSorts.map((s) => ({
+      field: s.field as keyof Task,
+      direction: s.direction as "asc" | "desc",
+    }));
+  }
+
+  private getPagination(page: number, pageSize: number): Pagination {
+    const take = pageSize;
+    const skip = (page - 1) * pageSize;
+    return { take, skip };
   }
 
   private mapTaskToDto(task: Task): TaskResponseDto {
