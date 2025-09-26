@@ -23,4 +23,8 @@ export default class TaskLabel extends BaseEntity implements ITaskLabelProps {
   static empty(): TaskLabel {
     return new TaskLabel({ id: "", taskId: "", labelId: "" });
   }
+
+  static create(taskId: string, labelId: string): TaskLabel {
+    return new TaskLabel({ id: "", taskId, labelId });
+  }
 }
