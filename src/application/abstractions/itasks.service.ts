@@ -4,4 +4,5 @@ import { TaskResponseDto } from "@Application/dtos/response/task.dto";
 
 export interface ITasksService {
   createAsync(request: BaseRequestDto<CreateTaskRequestDto>): Promise<TaskResponseDto>;
+  addLabelAsync(taskId: string, labelId: string): Promise<void>;
 }
