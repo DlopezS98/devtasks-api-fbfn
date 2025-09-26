@@ -1,11 +1,11 @@
-import Label from "@Domain/entities/labels.entity";
+import Label, { LabelProps } from "@Domain/entities/labels.entity";
 import { ILabelsRepository } from "@Domain/abstractions/repositories/ilabels-repository";
 import NormalizedName from "@Domain/value-objects/normalized-name";
 
 import FirestoreRepository from "./firestore.repository";
 import UnitOfWork from "./unit-of-work";
 
-export default class LabelsRepository extends FirestoreRepository<Label> implements ILabelsRepository {
+export default class LabelsRepository extends FirestoreRepository<Label, LabelProps> implements ILabelsRepository {
   constructor(firestore: FirebaseFirestore.Firestore, uow: UnitOfWork) {
     super(firestore, uow, () => Label.empty());
   }
