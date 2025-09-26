@@ -8,6 +8,7 @@ import { TaskResponseDto } from "@Application/dtos/response/task.dto";
 import { IUnitOfWork } from "@Domain/abstractions/repositories/iunit-of-work";
 import { ComparisonOperator, FilterDescriptor, PagedResult, Pagination, Query, Sort } from "@Domain/core/query";
 import Label from "@Domain/entities/labels.entity";
+import TaskLabel from "@Domain/entities/task-label.entity";
 import Task from "@Domain/entities/task.entity";
 import DomainError, { ErrorCodes } from "@Domain/errors/domain-error";
 import EntityNotFoundError from "@Domain/errors/entity-not-found.error";
@@ -50,8 +51,11 @@ export default class TasksService implements ITasksService {
     const label = await this.unitOfWork.labelsRepository.getAsync(labelId);
     if (!label) throw new EntityNotFoundError("Label");
 
+    const newTaskLabel = TaskLabel.create(task.id, label.id);
+    await this.unitOfWork.tasksRepository.addLabelAsync(newTaskLabel);
     await this.unitOfWork.saveChangesAsync();
   }
+
 
   async searchAsync(baseRequest: BaseRequestDto<QueryDto>): Promise<PagedResult<TaskResponseDto>> {
     const query: Query<Task> = {
@@ -152,5 +156,17 @@ export default class TasksService implements ITasksService {
     const taskDto = this.mapTaskToDto(task);
 
     return taskDto;
+  }
+
+  async removeLabelAsync(taskId: string, labelId: string): Promise<void> {
+    const task = await this.unitOfWork.tasksRepository.getAsync(taskId);
+    if (!task) throw new EntityNotFoundError("Task");
+
+    const labelIndex = task.taskLabels.findIndex((tl) => tl.labelId === labelId);
+    if (labelIndex === -1) throw new DomainError("Label is not associated with the task", ErrorCodes.NOT_FOUND);
+
+    const taskLabel = task.taskLabels[labelIndex];
+    await this.unitOfWork.tasksRepository.removeLabelAsync(taskLabel);
+    await this.unitOfWork.saveChangesAsync();
   }
 }
