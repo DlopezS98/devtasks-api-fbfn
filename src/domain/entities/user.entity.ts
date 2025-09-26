@@ -1,8 +1,9 @@
 /* eslint-disable require-jsdoc */
 import Email from "../value-objects/email";
-import BaseEntity from "./base-entity";
 
-export interface IUserProps {
+import BaseEntity, { BaseEntityProps } from "./base-entity";
+
+export interface UserProps extends BaseEntityProps {
   id: string;
   displayName: string;
   email: Email;
@@ -13,7 +14,7 @@ export interface IUserProps {
   updatedAt: Date | null;
 }
 
-export default class User extends BaseEntity implements IUserProps {
+export default class User extends BaseEntity implements UserProps {
   public get namespace(): string {
     return "Users";
   }
@@ -26,7 +27,7 @@ export default class User extends BaseEntity implements IUserProps {
   createdAt!: Date;
   updatedAt: Date | null = null;
 
-  constructor(props: IUserProps) {
+  constructor(props: Omit<UserProps, "namespace">) {
     super(props.id);
     this.displayName = props.displayName;
     this.email = props.email;
@@ -37,7 +38,7 @@ export default class User extends BaseEntity implements IUserProps {
     this.updatedAt = props.updatedAt;
   }
 
-  static create(props: Omit<IUserProps, "id" | "displayName" | "createdAt" | "updatedAt" | "isActive">): User {
+  static create(props: Omit<UserProps, "id" | "displayName" | "createdAt" | "updatedAt" | "isActive">): User {
     return new User({
       ...props,
       id: "", // ID will be set by the repository

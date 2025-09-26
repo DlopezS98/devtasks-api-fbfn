@@ -1,11 +1,23 @@
-import User from "@Domain/entities/user.entity";
-import { FirestoreDataConverter } from "firebase-admin/firestore";
+import User, { UserProps } from "@Domain/entities/user.entity";
 import * as admin from "firebase-admin";
 import Email from "@Domain/value-objects/email";
+import { ICustomFirestoreConverter } from "@Infrastructure/asbtractions/icustom-firestore-converter";
+import { UpdateData } from "firebase-admin/firestore";
 
 import FirestoreUtils from "../firestore.utils";
 
-export default class UserConverter implements FirestoreDataConverter<User> {
+export default class UserConverter implements ICustomFirestoreConverter<User, UserProps> {
+  toUpdateObject(model: User): UpdateData<UserProps> {
+    return {
+      email: model.email.getValue(),
+      displayName: model.displayName,
+      passwordHash: model.passwordHash,
+      passwordSalt: model.passwordSalt,
+      isActive: model.isActive,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    };
+  }
+
   toFirestore(entity: User): FirebaseFirestore.DocumentData {
     return {
       email: entity.email.getValue(),
