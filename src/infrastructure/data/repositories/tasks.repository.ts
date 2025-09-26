@@ -1,6 +1,7 @@
 import { ITasksRepository } from "@Domain/abstractions/repositories/itasks-repository";
 import Task, { TaskProps } from "@Domain/entities/task.entity";
 import TaskLabel from "@Domain/entities/task-label.entity";
+import { Query, PagedResult } from "@Domain/core/query";
 
 import FactoryConverter from "../converters/factory-converter";
 
@@ -60,6 +61,21 @@ export default class TasksRepository extends FirestoreRepository<Task, TaskProps
     );
 
     return tasks;
+  }
+
+  override async queryAsync(query: Query<TaskProps>): Promise<PagedResult<Task>> {
+    const pagedResult = await super.queryAsync(query);
+    const tasks = pagedResult.items;
+    if (tasks.length === 0) return pagedResult;
+
+    await Promise.all(
+      tasks.map(async (task) => {
+        const labelSnapshot = await this.getTaskLabelCollectionRef(task.id).get();
+        labelSnapshot.docs.forEach((doc) => task.addTaskLabel(doc.data()));
+      })
+    );
+
+    return pagedResult;
   }
 
   override async getAsync(id: string): Promise<Task | null> {
