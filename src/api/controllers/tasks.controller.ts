@@ -48,4 +48,15 @@ export default class TasksController extends BaseApiController {
       res.status(500).json({ error: message });
     }
   }
+
+  async addLabelAsync(req: Request, res: Response) {
+    try {
+      const { taskId, labelId } = req.params;
+      await this.tasksService.addLabelAsync(taskId, labelId);
+      res.status(204).send();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
+      res.status(500).json({ error: message });
+    }
+  }
 }
