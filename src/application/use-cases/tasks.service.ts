@@ -113,7 +113,9 @@ export default class TasksService implements ITasksService {
     const task = await this.unitOfWork.tasksRepository.getAsync(taskId);
     if (!task) throw new EntityNotFoundError("Task");
 
-    await this.unitOfWork.tasksRepository.deleteAsync(task);
+    // Soft delete by setting isActive to false
+    task.isActive = false;
+    await this.unitOfWork.tasksRepository.updateAsync(task);
     await this.unitOfWork.saveChangesAsync();
   }
 
