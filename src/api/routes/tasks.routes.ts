@@ -9,7 +9,19 @@ const tasksRouterBuilder = (controller: TasksController) => {
     ...controller.getMiddlewares(),
     controller.createAsync.bind(controller) as unknown as RequestHandler,
   );
-  // Add more routes (list, delete, update) as needed
+
+  router.get(
+    "/tasks",
+    ...controller.getMiddlewares(),
+    controller.searchTasksAsync.bind(controller) as unknown as RequestHandler,
+  );
+
+  router.post(
+    "/tasks/:taskId/labels/:labelId",
+    ...controller.getMiddlewares(),
+    controller.addLabelAsync.bind(controller) as unknown as RequestHandler,
+  );
+
   return router;
 };
 
