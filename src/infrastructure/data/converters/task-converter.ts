@@ -3,6 +3,7 @@ import Task from "@Domain/entities/task.entity";
 import { FirestoreDataConverter } from "firebase-admin/firestore";
 import * as admin from "firebase-admin";
 import TaskLabel from "@Domain/entities/task-label.entity";
+import TaskStatus from "@Domain/value-objects/task-status";
 
 import FirestoreUtils from "../firestore.utils";
 
@@ -27,7 +28,7 @@ export default class TaskConverter implements FirestoreDataConverter<Task> {
       id: snapshot.id,
       title: data.title,
       description: data.description,
-      status: data.status,
+      status: TaskStatus.create(data.status),
       priority: data.priority,
       createdAt: FirestoreUtils.getDateFrom(data.createdAt) ?? new Date(0),
       updatedAt: FirestoreUtils.getDateFrom(data.updatedAt),
