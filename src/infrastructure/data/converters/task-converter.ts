@@ -12,12 +12,10 @@ export default class TaskConverter implements ICustomFirestoreConverter<Task, Ta
   toUpdateObject(model: Task): UpdateData<TaskProps> {
     return {
       id: model.id,
-      description: model.description,
       title: model.title,
+      description: model.description,
       status: model.status.getValue(),
       priority: model.priority,
-      namespace: model.namespace,
-      createdAt: model.createdAt,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       completedAt: model.completedAt,
       createdBy: model.createdBy,
