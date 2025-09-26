@@ -39,7 +39,7 @@ export default class LabelsRepository extends FirestoreRepository<Label> impleme
   }
 
   async getByUserAsync(userId: string): Promise<Label[]> {
-    const query = this.collectionRef().where("createdBy", "==", userId);
+    const query = this.collectionRef().where("createdBy", "==", userId).where("isActive", "==", true);
     const snapshot = await query.get();
     return snapshot.empty ? [] : snapshot.docs.map((doc) => doc.data());
   }
