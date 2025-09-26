@@ -1,10 +1,11 @@
 /* eslint-disable require-jsdoc */
-import User from "@Domain/entities/user.entity";
-import FirestoreRepository from "./firestore.repository";
-import UnitOfWork from "./unit-of-work";
+import User, { UserProps } from "@Domain/entities/user.entity";
 import { IUsersRepository } from "@Domain/abstractions/repositories/iusers-repository";
 
-export default class UsersRepository extends FirestoreRepository<User> implements IUsersRepository {
+import FirestoreRepository from "./firestore.repository";
+import UnitOfWork from "./unit-of-work";
+
+export default class UsersRepository extends FirestoreRepository<User, UserProps> implements IUsersRepository {
   constructor(firestore: FirebaseFirestore.Firestore, uow: UnitOfWork) {
     super(firestore, uow, () => User.empty());
   }
