@@ -16,7 +16,7 @@ export default class TaskConverter implements ICustomFirestoreConverter<Task, Ta
       status: model.status.getValue(),
       priority: model.priority,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      completedAt: model.completedAt,
+      completedAt: model.completedAt ? admin.firestore.FieldValue.serverTimestamp() : null,
       isActive: model.isActive,
     };
   }
