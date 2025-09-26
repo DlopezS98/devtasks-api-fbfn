@@ -38,7 +38,9 @@ export default class User extends BaseEntity implements UserProps {
     this.updatedAt = props.updatedAt;
   }
 
-  static create(props: Omit<UserProps, "id" | "displayName" | "createdAt" | "updatedAt" | "isActive">): User {
+  static create(
+    props: Omit<UserProps, "id" | "displayName" | "createdAt" | "updatedAt" | "isActive" | "namespace">,
+  ): User {
     return new User({
       ...props,
       id: "", // ID will be set by the repository

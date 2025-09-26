@@ -44,7 +44,9 @@ export default class RefreshToken extends BaseEntity implements RefreshTokenProp
     this.deviceName = props.deviceName;
   }
 
-  static create(props: Omit<RefreshTokenProps, "id" | "revokedAt" | "isRevoked" | "createdAt">): RefreshToken {
+  static create(
+    props: Omit<RefreshTokenProps, "id" | "revokedAt" | "isRevoked" | "createdAt" | "namespace">,
+  ): RefreshToken {
     return new RefreshToken({
       id: "", // placeholder, should be set by repository
       ...props,
