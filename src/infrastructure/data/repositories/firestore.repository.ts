@@ -87,9 +87,8 @@ export default class FirestoreRepository<TEntity extends BaseEntity> implements 
     this.uow.delete(this.collectionRef().doc(entity.id));
   }
 
-  async listAsync(): Promise<TEntity[]> {
-    const querySnapshot = await this.collectionRef()
-      .get();
+  async getAllAsync(): Promise<TEntity[]> {
+    const querySnapshot = await this.collectionRef().get();
     return querySnapshot.docs.map((doc) => doc.data());
   }
 

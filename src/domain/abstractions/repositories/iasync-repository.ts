@@ -8,5 +8,5 @@ export interface IAsyncRepository<TEntity extends BaseEntity> {
   updateAsync(entities: TEntity[]): Promise<void>;
   deleteAsync(entity: TEntity): Promise<void>;
   deleteAsync(entities: TEntity[]): Promise<void>;
-  listAsync(): Promise<TEntity[]>;
+  getAllAsync(): Promise<TEntity[]>;
 }
