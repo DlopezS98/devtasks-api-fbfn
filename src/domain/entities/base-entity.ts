@@ -6,7 +6,12 @@ export interface IDomainEvent<TPayload = unknown> {
   occurredAt: Date;
 }
 
-export default class BaseEntity {
+export interface BaseEntityProps {
+  id: string;
+  namespace: string;
+}
+
+export default class BaseEntity implements BaseEntityProps {
   public get namespace(): string {
     return this.constructor.name.toLowerCase();
   }
