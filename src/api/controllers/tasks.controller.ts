@@ -39,8 +39,9 @@ export default class TasksController extends BaseApiController {
 
   async getTaskByIdAsync(req: Request<{ taskId: string }>, res: Response) {
     try {
+      const userId = this.getCurrentUser(req).id;
       const { taskId } = req.params;
-      const task = await this.tasksService.getByIdAsync(taskId);
+      const task = await this.tasksService.getByIdAsync(taskId, userId);
       res.status(200).json(task);
     } catch (error) {
       const message = error instanceof Error ? error.message : "An unexpected error occurred.";

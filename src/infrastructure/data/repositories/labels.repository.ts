@@ -1,6 +1,7 @@
 import Label, { LabelProps } from "@Domain/entities/labels.entity";
 import { ILabelsRepository } from "@Domain/abstractions/repositories/ilabels-repository";
 import NormalizedName from "@Domain/value-objects/normalized-name";
+import { FieldPath } from "firebase-admin/firestore";
 
 import FirestoreRepository from "./firestore.repository";
 import UnitOfWork from "./unit-of-work";
@@ -10,7 +11,7 @@ export default class LabelsRepository extends FirestoreRepository<Label, LabelPr
     super(firestore, uow, () => Label.empty());
   }
 
-  async getByIdsAsync(labelIds: string[]): Promise<Label[]> {
+  async getByIdsAsync(labelIds: string[], userId: string): Promise<Label[]> {
     if (labelIds.length === 0) return [];
 
     const batches: string[][] = [];
@@ -22,7 +23,7 @@ export default class LabelsRepository extends FirestoreRepository<Label, LabelPr
 
     const results: Label[] = [];
     for (const batch of batches) {
-      const query = this.collectionRef().where("id", "in", batch);
+      const query = this.collectionRef().where(FieldPath.documentId(), "in", batch).where("createdBy", "==", userId);
       const snapshot = await query.get();
       if (snapshot.empty) continue;
 

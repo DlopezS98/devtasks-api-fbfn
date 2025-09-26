@@ -31,7 +31,7 @@ export default class TasksService implements ITasksService {
     const labelIds = request.data.labelIds ?? [];
     let labels: Label[] = [];
     if (labelIds.length > 0) {
-      labels = await this.unitOfWork.labelsRepository.getByIdsAsync(labelIds);
+      labels = await this.unitOfWork.labelsRepository.getByIdsAsync(labelIds, request.userId);
       if (labels.length !== labelIds.length) throw new Error("One or more labels not found");
     }
 
@@ -44,14 +44,14 @@ export default class TasksService implements ITasksService {
     return taskDto;
   }
 
-  async getByIdAsync(taskId: string): Promise<TaskResponseDto> {
+  async getByIdAsync(taskId: string, userId: string): Promise<TaskResponseDto> {
     const task = await this.unitOfWork.tasksRepository.getAsync(taskId);
     if (!task) throw new EntityNotFoundError("Task");
 
     const taskDto = this.mapTaskToDto(task);
     const labelIds = task.taskLabels.map((tl) => tl.labelId);
     if (labelIds.length > 0) {
-      const labels = await this.unitOfWork.labelsRepository.getByIdsAsync(labelIds);
+      const labels = await this.unitOfWork.labelsRepository.getByIdsAsync(labelIds, userId);
       taskDto.labels = labels.map(this.mapLabelToDto);
     }
     return taskDto;
@@ -92,16 +92,17 @@ export default class TasksService implements ITasksService {
     query.filters?.push(isActiveFilter);
     const { items, totalCount, skip, take } = await this.unitOfWork.tasksRepository.queryAsync(query);
 
-    const taskDtos = await this.mapTasksWithLabels(items);
+    const taskDtos = await this.mapTasksWithLabels(items, baseRequest.userId);
     return { items: taskDtos, totalCount, skip, take };
   }
 
   /**
    * Maps tasks to their DTOs and attaches their labels efficiently.
    * @param {Task[]} tasks Array of Task entities
+   * @param {string} userId The ID of the user for label filtering
    * @return {Promise<TaskResponseDto[]>} Array of TaskResponseDto with labels populated
    */
-  private async mapTasksWithLabels(tasks: Task[]): Promise<TaskResponseDto[]> {
+  private async mapTasksWithLabels(tasks: Task[], userId: string): Promise<TaskResponseDto[]> {
     const taskLabelMap = new Map<string, string[]>();
     const labelIdSet = new Set<string>();
     tasks.forEach((task) => {
@@ -111,7 +112,7 @@ export default class TasksService implements ITasksService {
     const labelIds = Array.from(labelIdSet);
     if (labelIds.length === 0) return tasks.map((task) => this.mapTaskToDto(task));
 
-    const labels = await this.unitOfWork.labelsRepository.getByIdsAsync(labelIds);
+    const labels = await this.unitOfWork.labelsRepository.getByIdsAsync(labelIds, userId);
     const labelsMap = new Map(labels.map((label) => [label.id, this.mapLabelToDto(label)]));
 
     return tasks.map((item) => {
