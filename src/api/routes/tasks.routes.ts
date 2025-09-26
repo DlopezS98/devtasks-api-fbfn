@@ -16,6 +16,12 @@ const tasksRouterBuilder = (controller: TasksController) => {
     controller.searchTasksAsync.bind(controller) as unknown as RequestHandler,
   );
 
+  router.get(
+    "/tasks/:taskId",
+    ...controller.getMiddlewares(),
+    controller.getTaskByIdAsync.bind(controller) as unknown as RequestHandler,
+  );
+
   router.post(
     "/tasks/:taskId/labels/:labelId",
     ...controller.getMiddlewares(),
