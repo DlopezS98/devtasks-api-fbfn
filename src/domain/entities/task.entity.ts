@@ -62,7 +62,7 @@ export default class Task extends BaseEntity implements TaskProps {
       taskLabel = new TaskLabel({
         id: label.id,
         taskId: this.id,
-        labelId: label.id,
+        labelId: label.labelId,
       });
     } else {
       throw new Error("Invalid label type");
