@@ -29,7 +29,7 @@ export default class BaseApiController {
         if (typeof filterStr !== "string") continue;
 
         const [field, operator, value] = filterStr.split(":");
-        if (field && operator && value) continue;
+        if (!(field && operator && value)) continue;
         if (!allowedOperators.has(operator as ComparisonOperator)) continue;
 
         filters.push({ field, operator, value, raw: filterStr.toString() });
