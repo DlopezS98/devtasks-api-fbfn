@@ -1,0 +1,58 @@
+@taskId = "replace-with-task-id"
+@labelId = "replace-with-label-id"
+
+POST {{baseUrl}}/tasks HTTP/1.1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "title": "New Task - 1",
+  "description": "Task description",
+  "status": "Draft"
+}
+
+### Create Task with Labels
+POST {{baseUrl}}/tasks HTTP/1.1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "title": "New Task - 1",
+  "description": "Task description",
+  "status": "Draft",
+  "labelIds": ["labelId1", "labelId2"]
+}
+
+### Update Task
+PATCH  {{baseUrl}}/tasks/{{taskId}} HTTP/1.1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "status": "InProgress"
+}
+
+### Get Task by ID
+GET {{baseUrl}}/tasks/{{taskId}} HTTP/1.1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+### Search Tasks
+GET {{baseUrl}}/tasks?filter=status:eq:Draft&sort=createdAt:desc&page=1&pageSize=10 HTTP/1.1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+### Add Label to Task
+POST {{baseUrl}}/tasks/{{taskId}}/labels/{{labelId}} HTTP/1.1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+### Remove Label from Task
+DELETE {{baseUrl}}/tasks/{{taskId}}/labels/{{labelId}} HTTP/1.1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+### Delete Task
+DELETE {{baseUrl}}/tasks/{{taskId}} HTTP/1.1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json

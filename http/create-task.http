@@ -1,9 +1,0 @@
-POST {{baseUrl}}/tasks HTTP/1.1
-Authorization: Bearer {{authToken}}
-Content-Type: application/json
-
-{
-  "title": "New Task - 1",
-  "description": "Task description",
-  "status": "Draft"
-}

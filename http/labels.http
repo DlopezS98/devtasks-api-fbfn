@@ -1,3 +1,14 @@
 GET {{baseUrl}}/labels HTTP/1.1
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
+
+
+### Create Label
+POST {{baseUrl}}/labels HTTP/1.1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "New Label",
+  "color": "#FF0000"
+}
