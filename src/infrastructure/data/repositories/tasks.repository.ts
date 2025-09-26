@@ -34,11 +34,7 @@ export default class TasksRepository extends FirestoreRepository<Task> implement
 
   private addTaskLabel(entity: Task, label: TaskLabel): TaskLabel {
     label.id = this.collectionRef().doc(entity.id).collection("labels").doc().id;
-    const labelRef = this.collectionRef()
-      .doc(entity.id)
-      .collection("labels")
-      .doc(label.id)
-      .withConverter(FactoryConverter.createConverter(TaskLabel.empty()));
+    const labelRef = this.getTaskLabelCollectionRef(entity.id).doc(label.id);
     this.uow.set(labelRef, label);
     return label;
   }
@@ -46,5 +42,22 @@ export default class TasksRepository extends FirestoreRepository<Task> implement
   async getByUserAsync(userId: string): Promise<Task[]> {
     const querySnapshot = await this.collectionRef().where("userId", "==", userId).get();
     return querySnapshot.docs.map((doc) => doc.data());
+  }
+
+  override async getAsync(id: string): Promise<Task | null> {
+    const task = await super.getAsync(id);
+    if (!task) return null;
+
+    const labelSnapshot = await this.getTaskLabelCollectionRef(id).get();
+    labelSnapshot.docs.forEach((doc) => task.addTaskLabel(doc.data()));
+    return task;
+  }
+
+  private getTaskLabelCollectionRef(taskId: string) {
+    const entity = TaskLabel.empty();
+    return this.collectionRef()
+      .doc(taskId)
+      .collection(entity.namespace)
+      .withConverter(FactoryConverter.createConverter(entity));
   }
 }

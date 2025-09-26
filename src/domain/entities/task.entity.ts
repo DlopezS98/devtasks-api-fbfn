@@ -47,12 +47,25 @@ export default class Task extends BaseEntity implements ITaskProps {
     this.createdBy = props.createdBy;
   }
 
-  addLabel(labelId: string) {
-    const taskLabel = new TaskLabel({
-      id: "", // entity generated value
-      taskId: this.id,
-      labelId,
-    });
+
+  addTaskLabel(label: TaskLabel | string): void {
+    let taskLabel: TaskLabel;
+    if (typeof label === "string") {
+      taskLabel = new TaskLabel({
+        id: "", // entity generated value
+        taskId: this.id,
+        labelId: label,
+      });
+    } else if (label instanceof TaskLabel) {
+      taskLabel = new TaskLabel({
+        id: label.id,
+        taskId: this.id,
+        labelId: label.id,
+      });
+    } else {
+      throw new Error("Invalid label type");
+    }
+
     this._taskLabels.push(taskLabel);
   }
 
