@@ -1,12 +1,12 @@
 /* eslint-disable require-jsdoc */
-import RefreshToken from "@Domain/entities/refresh-token.entity";
+import RefreshToken, { RefreshTokenProps } from "@Domain/entities/refresh-token.entity";
 import { IRefreshTokensRepository } from "@Domain/abstractions/repositories/irefresh-tokens-repository";
 
 import FirestoreRepository from "./firestore.repository";
 import UnitOfWork from "./unit-of-work";
 
 export default class RefreshTokensRepository
-  extends FirestoreRepository<RefreshToken>
+  extends FirestoreRepository<RefreshToken, RefreshTokenProps>
   implements IRefreshTokensRepository {
   constructor(firestore: FirebaseFirestore.Firestore, uow: UnitOfWork) {
     super(firestore, uow, () => RefreshToken.empty());
