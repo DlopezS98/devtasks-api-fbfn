@@ -1,4 +1,4 @@
-@taskId = tlkIJNiCYaObOfmkT8Jq
+@taskId = wwWlq2oBtIC5e6Rpaqjg
 @labelId = "replace-with-label-id"
 
 POST {{baseUrl}}/tasks HTTP/1.1
@@ -17,10 +17,10 @@ Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
-  "title": "New Task - 1",
+  "title": "New Task - 3",
   "description": "Task description",
   "status": "Draft",
-  "labelIds": ["labelId1", "labelId2"]
+  "labelIds": ["lYg7nt6fgvesB7794XHi", "VQ9vXldoanYBfnOwHF7A"]
 }
 
 ### Update Task

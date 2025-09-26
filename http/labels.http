@@ -19,5 +19,5 @@ Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
-  "name": "Development"
+  "name": "Backend"
 }
