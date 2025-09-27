@@ -11,6 +11,7 @@ const envSchema = zod.object({
   JWT_SIGNING_KEY: zod.string().min(1),
   JWT_ACCESS_TOKEN_MINUTES: zod.string().transform((val) => parseInt(val, 10)),
   JWT_REFRESH_TOKEN_DAYS: zod.string().transform((val) => parseInt(val, 10)),
+  CORS_ORIGIN: zod.string().optional().default("*"),
 });
 
 export default class Environment {
@@ -65,5 +66,9 @@ export default class Environment {
 
   get JWT_REFRESH_TOKEN_DAYS(): number {
     return this._env.JWT_REFRESH_TOKEN_DAYS;
+  }
+
+  get CORS_ORIGIN(): string {
+    return this._env.CORS_ORIGIN;
   }
 }
