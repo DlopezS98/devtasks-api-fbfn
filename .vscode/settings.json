@@ -3,7 +3,11 @@
     "rest-client.environmentVariables": {
         "development": {
             "baseUrl": "http://localhost:3000/api",
-            "authToken": "your_actual_token_here"
+            "authToken": "<YOUR_AUTH_TOKEN_HERE>"
+        },
+        "production": {
+            "baseUrl": "https://api-oulvmaylrq-uc.a.run.app/api",
+            "authToken": "<YOUR_AUTH_TOKEN_HERE>"
         }
     }
 }
