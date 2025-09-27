@@ -41,13 +41,21 @@ JWT_REFRESH_TOKEN_DAYS = 30
 JWT_SIGNING_KEY = <USE_THE_PRIVATE_KEY_FROM_YOUR_SERVICE_ACCOUNT_JSON_FILE>
 ```
 
-6. Start the development server:
+7. Start the development server:
 ```bash
 npm run dev
 ```
-7. The server will be running at `http://localhost:3000`:
-8. You can also launch the Firebase Emulator Suite to test the functions locally:
+8. The server will be running at `http://localhost:3000`:
+9. You can also launch the Firebase Emulator Suite to test the functions locally:
 ```bash
 npm run serve
 ```
-9. This launches the Firebase Emulator Suite, which includes the Functions emulator. You can access the Emulator Suite UI at `http://localhost:4000`.
+10. This launches the Firebase Emulator Suite, which includes the Functions emulator. You can access the Emulator Suite UI at `http://localhost:4000`.
+
+
+### Testing the API Endpoints
+This project contains some http files in the `http` folder. You can test these endpoints an extension like [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) in VSCode.
+- Make sure to switch or set the appropriate environment in the REST Client extension to match your local server settings or deployed environment.
+    - Ctrl+Shift+P -> REST Client: Switch Environment -> Select `development` for local testing.
+- Open any of the `.http` files in the `http` folder and click on the "Send Request" link above each request to execute it.
+- Ensure the server is running locally before sending requests.
