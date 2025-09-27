@@ -26,11 +26,21 @@ By default, this project uses application default credentials for authentication
 If you prefer to use a service account key file, follow these steps:
 - Create a Firebase project and generate a service account key.
 - Save the service account JSON file as `devtasks-serviceaccount.json` in the project source folder `src`.
-- Locate the `firebase.config.ts` file in the `src` folder.
+- Locate the `firestore.context.ts` file in the `src/infrastructure/data/` folder.
 - Uncomment the lines that import the service account and initialize the Firebase app with it.
-<!-- 5. Set up your Firebase service account:
-   - Create a Firebase project and generate a service account key.
-   - Save the service account JSON file as `devtasks-serviceaccount.json` in the project source folder `src`. -->
+
+6. Create a `development.env` file in the src directory and add the following environment variables:
+```env
+PORT=3000
+CORS_ORIGIN=*
+SERVICE_ACCOUNT_EMAIL = <your-service-account-email>@<your-project-id>.iam.gserviceaccount.com
+JWT_ISSUER = <your-service-account-email>@<your-project-id>.iam.gserviceaccount.com
+JWT_AUDIENCE = your-web-app-or-client-id
+JWT_ACCESS_TOKEN_MINUTES = 7200
+JWT_REFRESH_TOKEN_DAYS = 30
+JWT_SIGNING_KEY = <USE_THE_PRIVATE_KEY_FROM_YOUR_SERVICE_ACCOUNT_JSON_FILE>
+```
+
 6. Start the development server:
 ```bash
 npm run dev
