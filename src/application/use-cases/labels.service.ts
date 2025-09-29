@@ -59,6 +59,32 @@ export default class LabelsService implements ILabelsService {
     }));
   }
 
+  async updateAsync(id: string, request: BaseRequestDto<LabelRequestDto>): Promise<LabelResponseDto> {
+    const label = await this.unitOfWork.labelsRepository.getAsync(id);
+    if (!label) throw new EntityNotFoundError(Label.name);
+
+    if (request.data.name && request.data.name !== label.name) {
+      const existingLabel = await this.unitOfWork.labelsRepository.getByNameAsync(request.data.name);
+      if (existingLabel && existingLabel.id !== id) throw new Error("Label with the same name already exists.");
+      label.name = request.data.name;
+    }
+
+    if (request.data.color) {
+      label.color = request.data.color;
+    }
+
+    await this.unitOfWork.labelsRepository.updateAsync(label);
+    await this.unitOfWork.saveChangesAsync();
+
+    return {
+      id: label.id,
+      name: label.name,
+      color: label.color,
+      createdAt: label.createdAt,
+      updatedAt: label.updatedAt,
+    };
+  }
+
   private generateRandomColor(name: string): string {
     const firstChar = name.charAt(0).toUpperCase();
     const hash = crypto.createHash("sha256").update(firstChar, "utf8").digest("hex");

@@ -19,6 +19,11 @@ const labelsRouterBuilder = (controller: LabelsController) => {
     ...controller.getMiddlewares(),
     controller.deleteAsync.bind(controller) as unknown as RequestHandler,
   );
+  router.put(
+    "/labels/:id",
+    ...controller.getMiddlewares(),
+    controller.updateAsync.bind(controller) as unknown as RequestHandler,
+  );
   return router;
 };
 

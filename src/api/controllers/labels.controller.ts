@@ -41,4 +41,12 @@ export default class LabelsController extends BaseApiController {
     await this.labelsService.deleteAsync(id);
     res.status(204).send();
   }
+
+  async updateAsync(req: Request<{ id: string }, LabelRequestDto>, res: Response) {
+    const { id } = req.params;
+    const user = this.getCurrentUser(req);
+    const request: BaseRequestDto<LabelRequestDto> = { userId: user.id, data: req.body };
+    const updatedLabel = await this.labelsService.updateAsync(id, request);
+    res.status(200).json(updatedLabel);
+  }
 }
