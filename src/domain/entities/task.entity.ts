@@ -71,6 +71,10 @@ export default class Task extends BaseEntity implements TaskProps {
     this._taskLabels.push(taskLabel);
   }
 
+  resetTaskLabels(): void {
+    this._taskLabels = [];
+  }
+
   static empty(): Task {
     return new Task({
       id: "",
