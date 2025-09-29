@@ -45,7 +45,10 @@ export default class LabelsService implements ILabelsService {
 
   async listAsync(userId: string): Promise<LabelResponseDto[]> {
     const query: Query<LabelProps> = {
-      filters: [{ field: "createdBy", operator: "eq", value: userId }],
+      filters: [
+        { field: "createdBy", operator: "eq", value: userId },
+        { field: "isActive", operator: "eq", value: true },
+      ],
       sorts: [{ field: "createdAt", direction: "desc" }],
     };
 
