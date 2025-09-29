@@ -193,6 +193,10 @@ export default class TasksService implements ITasksService {
         if (!canTransition) throw new DomainError("Invalid task status transition", ErrorCodes.CONFLICT);
         task.status = status;
       }
+
+      if (status.equals(TaskStatus.create("Done"))) {
+        task.completedAt = new Date();
+      }
     }
     if (request.data.priority !== undefined) task.priority = request.data.priority;
 
