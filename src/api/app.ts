@@ -4,6 +4,7 @@ import cors from "cors";
 import Environment from "../environment";
 
 import authRouterBuilder from "./routes/authentication.routes";
+import { globalErrorHandler } from "./middlewares/global-error-handler.middleware";
 import DependencyContainer from "./dependency.container";
 import AuthenticationController from "./controllers/authentication.controller";
 import labelsRouterBuilder from "./routes/labels.routes";
@@ -32,5 +33,8 @@ const container = DependencyContainer.getInstance().initialize().getContainer();
 app.use("/api", authRouterBuilder(container.get(AuthenticationController)));
 app.use("/api", labelsRouterBuilder(container.get(LabelsController)));
 app.use("/api", tasksRouterBuilder(container.get(TasksController)));
+
+// Global error handler (should be last middleware)
+app.use(globalErrorHandler);
 
 export default app;
