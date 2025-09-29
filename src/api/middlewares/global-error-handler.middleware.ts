@@ -1,7 +1,10 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import DomainError, { ErrorCodes } from "@Domain/errors/domain-error";
 
-export function globalErrorHandler(err: unknown, _: Request, res: Response) {
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function globalErrorHandler(err: unknown, _: Request, res: Response, __: NextFunction) {
   let status = 500;
   let message = "Internal Server Error";
 
