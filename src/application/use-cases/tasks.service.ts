@@ -188,9 +188,11 @@ export default class TasksService implements ITasksService {
     if (request.data.description !== undefined) task.description = request.data.description;
     if (request.data.status !== undefined) {
       const status = TaskStatus.create(request.data.status);
-      const canTransition = task.status.canTransitionTo(status);
-      if (!canTransition) throw new DomainError("Invalid task status transition", ErrorCodes.CONFLICT);
-      task.status = status;
+      if (!status.equals(task.status)) {
+        const canTransition = task.status.canTransitionTo(status);
+        if (!canTransition) throw new DomainError("Invalid task status transition", ErrorCodes.CONFLICT);
+        task.status = status;
+      }
     }
     if (request.data.priority !== undefined) task.priority = request.data.priority;
 
