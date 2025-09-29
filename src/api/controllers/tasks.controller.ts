@@ -26,85 +26,50 @@ export default class TasksController extends BaseApiController {
   public getMiddlewares = (): RequestHandler[] => [this.authMiddleware.handleAsync];
 
   async createAsync(req: Request<CreateTaskRequestDto>, res: Response) {
-    try {
-      const user = this.getCurrentUser(req);
-      const request: BaseRequestDto<CreateTaskRequestDto> = { userId: user.id, data: req.body };
-      const task = await this.tasksService.createAsync(request);
-      res.status(201).json(task);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
-      res.status(500).json({ error: message });
-    }
+    const user = this.getCurrentUser(req);
+    const request: BaseRequestDto<CreateTaskRequestDto> = { userId: user.id, data: req.body };
+    const task = await this.tasksService.createAsync(request);
+    res.status(201).json(task);
   }
 
   async getTaskByIdAsync(req: Request<{ taskId: string }>, res: Response) {
-    try {
-      const userId = this.getCurrentUser(req).id;
-      const { taskId } = req.params;
-      const task = await this.tasksService.getByIdAsync(taskId, userId);
-      res.status(200).json(task);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
-      res.status(500).json({ error: message });
-    }
+    const userId = this.getCurrentUser(req).id;
+    const { taskId } = req.params;
+    const task = await this.tasksService.getByIdAsync(taskId, userId);
+    res.status(200).json(task);
   }
 
   async searchTasksAsync(req: Request, res: Response) {
-    try {
-      const query = this.generateQuery(req);
-      const userId = this.getCurrentUser(req).id;
-      const baseRequest: BaseRequestDto<QueryDto> = { userId, data: query };
-      const result = await this.tasksService.searchAsync(baseRequest);
-      res.status(200).json(result);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
-      res.status(500).json({ error: message });
-    }
+    const query = this.generateQuery(req);
+    const userId = this.getCurrentUser(req).id;
+    const baseRequest: BaseRequestDto<QueryDto> = { userId, data: query };
+    const result = await this.tasksService.searchAsync(baseRequest);
+    res.status(200).json(result);
   }
 
   async addLabelAsync(req: Request, res: Response) {
-    try {
-      const { taskId, labelId } = req.params;
-      await this.tasksService.addLabelAsync(taskId, labelId);
-      res.status(204).send();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
-      res.status(500).json({ error: message });
-    }
+    const { taskId, labelId } = req.params;
+    await this.tasksService.addLabelAsync(taskId, labelId);
+    res.status(204).send();
   }
 
   async removeLabelAsync(req: Request, res: Response) {
-    try {
-      const { taskId, labelId } = req.params;
-      await this.tasksService.removeLabelAsync(taskId, labelId);
-      res.status(204).send();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
-      res.status(500).json({ error: message });
-    }
+    const { taskId, labelId } = req.params;
+    await this.tasksService.removeLabelAsync(taskId, labelId);
+    res.status(204).send();
   }
 
   async deleteAsync(req: Request<{ taskId: string }>, res: Response) {
-    try {
-      const { taskId } = req.params;
-      await this.tasksService.deleteAsync(taskId);
-      res.status(204).send();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
-      res.status(500).json({ error: message });
-    }
+    const { taskId } = req.params;
+    await this.tasksService.deleteAsync(taskId);
+    res.status(204).send();
   }
 
   async updateAsync(req: Request<{ taskId: string }, unknown, UpdateTaskRequestDto>, res: Response) {
-    try {
-      const { taskId } = req.params;
-      const user = this.getCurrentUser(req);
-      const request: BaseRequestDto<UpdateTaskRequestDto> = { userId: user.id, data: req.body };
-      const task = await this.tasksService.updateAsync(taskId, request);
-      res.status(200).json(task);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
-      res.status(500).json({ error: message });
-    }
+    const { taskId } = req.params;
+    const user = this.getCurrentUser(req);
+    const request: BaseRequestDto<UpdateTaskRequestDto> = { userId: user.id, data: req.body };
+    const task = await this.tasksService.updateAsync(taskId, request);
+    res.status(200).json(task);
   }
 }

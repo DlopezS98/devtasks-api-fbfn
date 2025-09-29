@@ -24,36 +24,21 @@ export default class LabelsController extends BaseApiController {
   public getMiddlewares = (): RequestHandler[] => [this.authMiddleware.handleAsync];
 
   async createAsync(req: Request<LabelRequestDto>, res: Response) {
-    try {
-      const user = this.getCurrentUser(req);
-      const request: BaseRequestDto<LabelRequestDto> = { userId: user.id, data: req.body };
-      const label = await this.labelsService.addAsync(request);
-      res.status(201).json(label);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
-      res.status(500).json({ error: message });
-    }
+    const user = this.getCurrentUser(req);
+    const request: BaseRequestDto<LabelRequestDto> = { userId: user.id, data: req.body };
+    const label = await this.labelsService.addAsync(request);
+    res.status(201).json(label);
   }
 
   async listAsync(req: Request, res: Response) {
-    try {
-      const user = this.getCurrentUser(req);
-      const labels = await this.labelsService.listAsync(user.id);
-      res.status(200).json(labels);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
-      res.status(500).json({ error: message });
-    }
+    const user = this.getCurrentUser(req);
+    const labels = await this.labelsService.listAsync(user.id);
+    res.status(200).json(labels);
   }
 
   async deleteAsync(req: Request<{ id: string }>, res: Response) {
-    try {
-      const { id } = req.params;
-      await this.labelsService.deleteAsync(id);
-      res.status(204).send();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
-      res.status(500).json({ error: message });
-    }
+    const { id } = req.params;
+    await this.labelsService.deleteAsync(id);
+    res.status(204).send();
   }
 }
