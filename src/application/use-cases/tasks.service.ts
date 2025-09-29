@@ -190,14 +190,41 @@ export default class TasksService implements ITasksService {
       const status = TaskStatus.create(request.data.status);
       const canTransition = task.status.canTransitionTo(status);
       if (!canTransition) throw new DomainError("Invalid task status transition", ErrorCodes.CONFLICT);
-
       task.status = status;
     }
     if (request.data.priority !== undefined) task.priority = request.data.priority;
 
+    let labels: Label[] = [];
+    if (request.data.labelIds !== undefined && request.data.labelIds.length > 0) {
+      // determine which labels to add and which to remove
+      const newLabelIds = request.data.labelIds;
+      labels = await this.unitOfWork.labelsRepository.getByIdsAsync(newLabelIds, request.userId);
+      if (labels.length !== newLabelIds.length) throw new Error("One or more labels not found");
+
+      const currentLabelIds = task.taskLabels.map((tl) => tl.labelId);
+
+      const labelsToAddIds = newLabelIds.filter((id) => !currentLabelIds.includes(id));
+      const labelsToRemoveIds = currentLabelIds.filter((id) => !newLabelIds.includes(id));
+
+      if (labelsToAddIds.length > 0) {
+        const taskLabels = labelsToAddIds.map((labelId) => TaskLabel.create(task.id, labelId));
+        await this.unitOfWork.tasksRepository.addLabelsAsync(taskLabels);
+      }
+
+      if (labelsToRemoveIds.length > 0) {
+        const taskLabelsToRemove = task.taskLabels.filter((tl) => labelsToRemoveIds.includes(tl.labelId));
+        await this.unitOfWork.tasksRepository.removeLabelsAsync(taskLabelsToRemove);
+        // Update task entity to reflect removed labels
+        labels = labels.filter((l) => !labelsToRemoveIds.includes(l.id));
+      }
+    }
+
     await this.unitOfWork.tasksRepository.updateAsync(task);
     await this.unitOfWork.saveChangesAsync();
     const taskDto = this.mapTaskToDto(task);
+
+    // Attach labels to DTO
+    taskDto.labels = labels.map(this.mapLabelToDto);
 
     return taskDto;
   }

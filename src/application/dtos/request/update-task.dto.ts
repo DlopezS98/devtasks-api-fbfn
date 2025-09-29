@@ -3,4 +3,5 @@ export interface UpdateTaskRequestDto {
   status?: string;
   description?: string;
   priority?: number;
+  labelIds?: string[];
 }
