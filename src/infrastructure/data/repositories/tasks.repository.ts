@@ -100,6 +100,23 @@ export default class TasksRepository extends FirestoreRepository<Task, TaskProps
     return Promise.resolve();
   }
 
+  addLabelsAsync(labels: TaskLabel[]): Promise<void> {
+    labels.forEach((label) => {
+      label.id = this.getTaskLabelCollectionRef(label.taskId).doc().id;
+      const labelRef = this.getTaskLabelCollectionRef(label.taskId).doc(label.id);
+      this.uow.set(labelRef, label);
+    });
+    return Promise.resolve();
+  }
+
+  removeLabelsAsync(labels: TaskLabel[]): Promise<void> {
+    labels.forEach((label) => {
+      const labelRef = this.getTaskLabelCollectionRef(label.taskId).doc(label.id);
+      this.uow.delete(labelRef);
+    });
+    return Promise.resolve();
+  }
+
   private getTaskLabelCollectionRef(taskId: string) {
     const entity = TaskLabel.empty();
     return this.collectionRef()
