@@ -6,6 +6,7 @@ const authRouterBuilder = (controller: AuthenticationController) => {
   const router = Router();
   router.post("/authentication/login", controller.loginAsync.bind(controller));
   router.post("/authentication/register", controller.registerAsync.bind(controller));
+  router.post("/authentication/validate-token", controller.validateTokenAsync.bind(controller));
   return router;
 };
 

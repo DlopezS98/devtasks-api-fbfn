@@ -47,4 +47,24 @@ export default class AuthenticationController {
       res.status(400).send({ error: "Failed to register user" });
     }
   }
+
+  async validateTokenAsync(req: Request, res: Response): Promise<void> {
+    const token = req.headers["authorization"]?.replace("Bearer ", "") || req.body.token;
+    if (!token) {
+      res.status(400).send({ error: "Token is required" });
+      return;
+    }
+
+    try {
+      const user = await this.authService.validateTokenAsync(token);
+      if (!user) {
+        res.status(401).send({ error: "Invalid token" });
+        return;
+      }
+      res.send(user);
+    } catch (error) {
+      console.error("Token validation error:", error);
+      res.status(401).send({ error: "Invalid or expired token" });
+    }
+  }
 }
