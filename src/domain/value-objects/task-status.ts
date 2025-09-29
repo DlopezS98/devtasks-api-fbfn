@@ -62,7 +62,7 @@ export default class TaskStatus extends ValueObject<TaskStatusProps> {
   public canTransitionTo = (newStatus: TaskStatus): boolean => {
     const transitions: Record<TaskStatuses, TaskStatuses[]> = {
       [TaskStatuses.Draft]: [TaskStatuses.ToDo],
-      [TaskStatuses.ToDo]: [TaskStatuses.InProgress, TaskStatuses.Done],
+      [TaskStatuses.ToDo]: [TaskStatuses.InProgress, TaskStatuses.Draft],
       [TaskStatuses.InProgress]: [TaskStatuses.Done, TaskStatuses.ToDo],
       [TaskStatuses.Done]: [TaskStatuses.InProgress],
     };
