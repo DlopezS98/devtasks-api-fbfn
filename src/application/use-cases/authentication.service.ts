@@ -75,4 +75,19 @@ export default class AuthenticationService implements IAuthenticationService {
       createdAt: newUser.createdAt,
     };
   }
+
+  async validateTokenAsync(token: string): Promise<UserResponseDto | null> {
+    const payload = this.tokenService.verifyToken(token);
+    if (!payload.isValid) return null;
+
+    const user = await this.unitOfWork.usersRepository.getAsync(payload.payload?.uid || "");
+    if (!user) throw new EntityNotFoundError("User");
+
+    return {
+      id: user.id,
+      email: user.email.getValue(),
+      displayName: user.displayName,
+      createdAt: user.createdAt,
+    };
+  }
 }
