@@ -16,7 +16,7 @@ export default class LabelsService implements ILabelsService {
   constructor(@inject(SERVICE_IDENTIFIERS.IUnitOfWork) private readonly unitOfWork: IUnitOfWork) {}
 
   async addAsync(request: BaseRequestDto<LabelRequestDto>): Promise<LabelResponseDto> {
-    const existingLabel = await this.unitOfWork.labelsRepository.getByNameAsync(request.data.name);
+    const existingLabel = await this.unitOfWork.labelsRepository.getByNameAsync(request.userId, request.data.name);
     if (existingLabel) throw new Error("Label with the same name already exists.");
 
     // Use provided color or generated one
@@ -67,7 +67,7 @@ export default class LabelsService implements ILabelsService {
     if (!label) throw new EntityNotFoundError(Label.name);
 
     if (request.data.name && request.data.name !== label.name) {
-      const existingLabel = await this.unitOfWork.labelsRepository.getByNameAsync(request.data.name);
+      const existingLabel = await this.unitOfWork.labelsRepository.getByNameAsync(request.userId, request.data.name);
       if (existingLabel && existingLabel.id !== id) throw new Error("Label with the same name already exists.");
       label.name = request.data.name;
     }

@@ -33,10 +33,13 @@ export default class LabelsRepository extends FirestoreRepository<Label, LabelPr
     return results;
   }
 
-  async getByNameAsync(name: string): Promise<Label | null> {
-    const query = this.collectionRef().where("normalizedName", "==", NormalizedName.create(name).getValue()).limit(1);
+  async getByNameAsync(userId: string, name: string): Promise<Label | null> {
+    const query = this.collectionRef()
+      .where("normalizedName", "==", NormalizedName.create(name).getValue())
+      .where("createdBy", "==", userId)
+      .limit(1);
     const snapshot = await query.get();
-    return snapshot.empty ? null : (snapshot.docs[0].data());
+    return snapshot.empty ? null : snapshot.docs[0].data();
   }
 
   async getByUserAsync(userId: string): Promise<Label[]> {
