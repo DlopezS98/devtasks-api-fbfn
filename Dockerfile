@@ -1,6 +1,4 @@
 ARG NODE_VERSION=22.13.0
-# Use production node environment by default.
-ARG ENVIRONMENT=production
 
 FROM node:${NODE_VERSION}-alpine as base
 
@@ -42,18 +40,21 @@ RUN npm run build
 # where the necessary files are copied from the build stage.
 FROM base as final
 
-ENV NODE_ENV ${ENVIRONMENT}
+# use production environment as default
+ENV NODE_ENV production
+ENV GOOGLE_APPLICATION_CREDENTIALS=./devtasks-serviceaccount.json
 
 # Run the application as a non-root user.
 USER node
 
 # Copy package.json so that package manager commands can be used.
-# COPY package.json .
+COPY package.json .
 
 # Copy the production dependencies from the deps stage and also
 # the built application from the build stage into the image.
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/lib ./lib
+COPY devtasks-serviceaccount.json ./devtasks-serviceaccount.json
 
 # Expose the port that the application listens on.
 EXPOSE 3000
