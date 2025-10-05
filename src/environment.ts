@@ -19,7 +19,7 @@ export default class Environment {
   private static _instance: Environment;
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private constructor() {
-    process.loadEnvFile(path.resolve(__dirname, `${this.API_ENV}.env`));
+    process.loadEnvFile(path.resolve(__dirname, `${this.NODE_ENV}.env`));
     const parsed = envSchema.safeParse(process.env);
     if (!parsed.success) {
       console.error("Invalid environment variables:", parsed.error.issues);
@@ -35,8 +35,8 @@ export default class Environment {
     return Environment._instance;
   }
 
-  get API_ENV(): string {
-    return process.env.API_ENV || "development";
+  get NODE_ENV(): string {
+    return process.env.NODE_ENV || "development";
   }
 
   get PORT(): number {
