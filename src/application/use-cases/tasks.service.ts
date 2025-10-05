@@ -194,7 +194,7 @@ export default class TasksService implements ITasksService {
         task.status = status;
       }
 
-      if (status.equals(TaskStatus.create("Done"))) {
+      if (status.isCompleted()) {
         task.completedAt = new Date();
       }
     }
