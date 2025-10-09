@@ -58,3 +58,20 @@ This project contains some http files in the `http` folder. You can test these e
     - Ctrl+Shift+P -> REST Client: Switch Environment -> Select `development` for local testing.
 - Open any of the `.http` files in the `http` folder and click on the "Send Request" link above each request to execute it.
 - Ensure the server is running locally before sending requests.
+
+### Generate firebase token for CI/CD
+1. Install the Firebase CLI if you haven't already:
+```bash
+npm install -g firebase-tools
+```
+2. Log in to your Firebase account:
+```bash
+firebase login:ci
+```
+3. This command will open a browser window for you to log in to your Firebase account. After logging in, you will receive a token in the terminal.
+4. Copy this token and add it as a secret in your GitHub repository settings:
+    - Go to your GitHub repository.
+    - Navigate to `Settings` > `Secrets and variables` > `Actions`.
+    - Click on `New repository secret`.
+    - Name the secret `FIREBASE_TOKEN` and paste the token you copied earlier as the value.
+5. Save logic apply for other secrets like `SERVICE_ACCOUNT_EMAIL`, `CORS_ORIGIN`, and `JWT_SIGNING_KEY` as needed.
