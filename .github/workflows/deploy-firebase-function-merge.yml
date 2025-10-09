@@ -27,9 +27,9 @@ jobs:
         run: npm ci --include=dev
 
       - name: Create .env File
+        working-directory: ./functions/src
         run: |
           echo "Running in ${{ env.NODE_ENV }} environment"
-          cd functions/src
           touch $NODE_ENV.env
           echo "CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}" >> $NODE_ENV.env
           echo "SERVICE_ACCOUNT_EMAIL=${{ secrets.SERVICE_ACCOUNT_EMAIL }}" >> $NODE_ENV.env
