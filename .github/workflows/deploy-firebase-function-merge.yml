@@ -10,12 +10,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
       - name: deploy function
         uses: jsryudev/deploy-firebase-functions@v20.0.1
         env:
