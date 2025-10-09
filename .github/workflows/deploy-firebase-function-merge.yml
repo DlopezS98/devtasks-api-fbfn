@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+env:
+  NODE_ENV: production
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -10,9 +12,33 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: deploy function
-        uses: jsryudev/deploy-firebase-functions@v20.0.1
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          FIREBASE_PROJECT: devtasks-3e2bf
-          FUNCTIONS_DIR: functions
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Install Dependencies
+        run: cd functions && npm ci
+
+      - name: Create .env File
+        run: |
+          echo "Running in $NODE_ENV environment"
+          cd functions/src
+          touch $NODE_ENV.env
+          echo "CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}" >> $NODE_ENV.env
+          echo "SERVICE_ACCOUNT_EMAIL=${{ secrets.SERVICE_ACCOUNT_EMAIL }}" >> $NODE_ENV.env
+          echo "JWT_ISSUER=${{ secrets.JWT_ISSUER }}" >> $NODE_ENV.env
+          echo "JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}" >> $NODE_ENV.env
+          echo "JWT_ACCESS_TOKEN_MINUTES=${{ secrets.JWT_ACCESS_TOKEN_MINUTES }}" >> $NODE_ENV.env
+          echo "JWT_REFRESH_TOKEN_DAYS=${{ secrets.JWT_REFRESH_TOKEN_DAYS }}" >> $NODE_ENV.env
+          echo "JWT_SIGNING_KEY=${{ secrets.JWT_SIGNING_KEY }}" >> $NODE_ENV.env
+
+      - name: Build Functions
+        run: cd functions && npm run build
+
+      - name: Deploy to Firebase
+        run: firebase deploy --only functions --token ${{ secrets.FIREBASE_TOKEN }}
