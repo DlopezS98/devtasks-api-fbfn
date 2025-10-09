@@ -16,15 +16,9 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
-
-      - name: Authenticate to Firebase
+      - name: deploy function
+        uses: jsryudev/deploy-firebase-functions@v20.0.1
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: firebase login:ci --token "$FIREBASE_TOKEN"
-
-      - name: Deploy Firebase Functions
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: firebase deploy --only functions --token "$FIREBASE_TOKEN"
+          FIREBASE_PROJECT: devtasks-3e2bf
+          FUNCTIONS_DIR: functions
