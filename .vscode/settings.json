@@ -1,13 +1,24 @@
 {
-    "editor.tabSize": 2,
-    "rest-client.environmentVariables": {
-        "development": {
-            "baseUrl": "http://localhost:3000/api",
-            "authToken": "<YOUR_AUTH_TOKEN_HERE>"
-        },
-        "production": {
-            "baseUrl": "https://api-oulvmaylrq-uc.a.run.app/api",
-            "authToken": "<YOUR_AUTH_TOKEN_HERE>"
-        }
-    }
+	"editor.tabSize": 2,
+	"rest-client.environmentVariables": {
+		"development": {
+			"baseUrl": "http://localhost:3000/api",
+			"authToken": "<YOUR_AUTH_TOKEN_HERE>"
+		},
+		"production": {
+			"baseUrl": "https://api-oulvmaylrq-uc.a.run.app/api",
+			"authToken": "<YOUR_AUTH_TOKEN_HERE>"
+		}
+	},
+	"eslint.workingDirectories": [
+		{
+			"mode": "auto"
+		},
+		{
+			"directory": "./functions",
+			"changeProcessCWD": true
+		}
+	],
+	"typescript.tsdk": "./functions/node_modules/typescript/lib",
+	"typescript.tsserver.log": "verbose"
 }
