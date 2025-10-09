@@ -22,7 +22,8 @@ app.use(cors({ origin: environment.CORS_ORIGIN }));
 
 // Routes...
 app.get("/", (req, res) => {
-  res.send("Hello from local server...!");
+  const envName = environment.NODE_ENV;
+  res.send(`Hello from deployed server in ${envName} environment...!`);
 });
 
 app.get("/health", (req, res) => {
