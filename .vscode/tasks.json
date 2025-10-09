@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "dev",
+			"path": "functions",
+			"problemMatcher": [],
+			"label": "npm: dev - functions",
+			"detail": "nodemon src/api/startup.ts"
+		},
+		{
+			"type": "npm",
+			"script": "install-deps",
+			"path": "functions",
+			"problemMatcher": [],
+			"label": "npm: install-deps - functions",
+			"detail": "npm ci"
+		}
+	]
+}
