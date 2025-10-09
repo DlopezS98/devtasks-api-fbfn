@@ -16,6 +16,15 @@
 			"problemMatcher": [],
 			"label": "npm: install-deps - functions",
 			"detail": "npm ci"
+		},
+		{
+			"type": "npm",
+			"script": "build",
+			"path": "functions",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build - functions",
+			"detail": "tsc && tsc-alias && cp ./src/production.env ./lib"
 		}
 	]
 }
