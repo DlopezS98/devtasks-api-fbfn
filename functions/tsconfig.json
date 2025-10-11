@@ -18,7 +18,7 @@
     "paths": {
       "@Application/*": ["src/application/*"],
       "@Domain/*": ["src/domain/*"],
-      "@Infrastructure/*": ["src/infrastructure/*"],
+      "@Infrastructure/Firebase/*": ["src/infrastructure/*"],
       "@Api/*": ["src/api/*"]
     }
   },
