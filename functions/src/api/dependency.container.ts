@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { Container } from "inversify";
-import InfrastructureContainerSetup from "@Infrastructure/infrastructure-container.setup";
+import InfrastructureContainerSetup from "@Infrastructure/Firebase/infrastructure-container.setup";
 import ApplicationContainer from "@Application/application-container.setup";
 
 import AuthenticationController from "./controllers/authentication.controller";

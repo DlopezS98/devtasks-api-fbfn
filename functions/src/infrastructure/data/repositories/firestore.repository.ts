@@ -3,7 +3,7 @@ import { IAsyncRepository } from "@Domain/abstractions/repositories/iasync-repos
 import BaseEntity, { BaseEntityProps } from "@Domain/entities/base-entity";
 import { CollectionReference } from "firebase-admin/firestore";
 import { FilterDescriptor, PagedResult, Query } from "@Domain/core/query";
-import { ICustomFirestoreConverter } from "@Infrastructure/abstractions/icustom-firestore-converter";
+import { ICustomFirestoreConverter } from "@Infrastructure/Firebase/abstractions/icustom-firestore-converter";
 
 import FactoryConverter from "../converters/factory-converter";
 

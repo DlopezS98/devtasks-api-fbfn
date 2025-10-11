@@ -1,7 +1,7 @@
 /* eslint-disable import/order */
 import "../paths";
 import app from "./app";
-import FirestoreContext from "@Infrastructure/data/firestore.context";
+import FirestoreContext from "@Infrastructure/Firebase/data/firestore.context";
 
 // Initialize Firebase app
 FirestoreContext.initializeApp();
