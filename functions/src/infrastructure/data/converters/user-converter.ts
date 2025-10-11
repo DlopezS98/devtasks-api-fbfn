@@ -1,7 +1,7 @@
 import User, { UserProps } from "@Domain/entities/user.entity";
 import * as admin from "firebase-admin";
 import Email from "@Domain/value-objects/email";
-import { ICustomFirestoreConverter } from "@Infrastructure/asbtractions/icustom-firestore-converter";
+import { ICustomFirestoreConverter } from "@Infrastructure/abstractions/icustom-firestore-converter";
 import { UpdateData } from "firebase-admin/firestore";
 
 import FirestoreUtils from "../firestore.utils";

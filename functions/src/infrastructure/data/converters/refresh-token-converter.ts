@@ -1,6 +1,6 @@
 import RefreshToken, { RefreshTokenProps } from "@Domain/entities/refresh-token.entity";
 import * as admin from "firebase-admin";
-import { ICustomFirestoreConverter } from "@Infrastructure/asbtractions/icustom-firestore-converter";
+import { ICustomFirestoreConverter } from "@Infrastructure/abstractions/icustom-firestore-converter";
 import { UpdateData } from "firebase-admin/firestore";
 
 import FirestoreUtils from "../firestore.utils";

@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
 import Label, { LabelProps } from "@Domain/entities/labels.entity";
-import { ICustomFirestoreConverter } from "@Infrastructure/asbtractions/icustom-firestore-converter";
+import { ICustomFirestoreConverter } from "@Infrastructure/abstractions/icustom-firestore-converter";
 import { UpdateData } from "firebase-admin/firestore";
 
 import FirestoreUtils from "../firestore.utils";

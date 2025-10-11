@@ -4,7 +4,7 @@ import { FirestoreDataConverter, UpdateData } from "firebase-admin/firestore";
 import * as admin from "firebase-admin";
 import TaskLabel from "@Domain/entities/task-label.entity";
 import TaskStatus from "@Domain/value-objects/task-status";
-import { ICustomFirestoreConverter } from "@Infrastructure/asbtractions/icustom-firestore-converter";
+import { ICustomFirestoreConverter } from "@Infrastructure/abstractions/icustom-firestore-converter";
 
 import FirestoreUtils from "../firestore.utils";
 

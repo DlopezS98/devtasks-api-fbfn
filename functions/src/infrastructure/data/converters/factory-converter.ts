@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 import BaseEntity, { BaseEntityProps } from "@Domain/entities/base-entity";
-import { ICustomFirestoreConverter } from "@Infrastructure/asbtractions/icustom-firestore-converter";
+import { ICustomFirestoreConverter } from "@Infrastructure/abstractions/icustom-firestore-converter";
 
 import TaskConverter, { TaskLabelConverter } from "./task-converter";
 import UserConverter from "./user-converter";
