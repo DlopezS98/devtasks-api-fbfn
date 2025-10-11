@@ -19,6 +19,7 @@
       "@Application/*": ["src/application/*"],
       "@Domain/*": ["src/domain/*"],
       "@Infrastructure/Firebase/*": ["src/infrastructure/*"],
+      "@Infrastructure/Mongo/*": ["src/infrastructure-mongo/*"],
       "@Api/*": ["src/api/*"]
     }
   },

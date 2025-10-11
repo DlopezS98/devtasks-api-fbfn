@@ -7,6 +7,7 @@ addAliases({
   "@Application": path.resolve(__dirname, "application"),
   "@Domain": path.resolve(__dirname, "domain"),
   "@Infrastructure/Firebase": path.resolve(__dirname, "infrastructure"),
+  "@Infrastructure/Mongo": path.resolve(__dirname, "infrastructure-mongo"),
   "@Shared": path.resolve(__dirname, "shared"),
   "@Api": path.resolve(__dirname, "api"),
 });
