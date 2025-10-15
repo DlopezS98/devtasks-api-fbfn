@@ -1,4 +1,4 @@
-import { BSON, ClientSession, Collection, Filter } from "mongodb";
+import { BSON, Collection, Filter } from "mongodb";
 import { IAsyncRepository } from "@Domain/abstractions/repositories/iasync-repository";
 import BaseEntity, { BaseEntityProps } from "@Domain/entities/base-entity";
 import { Query, PagedResult } from "@Domain/core/query";
@@ -8,6 +8,8 @@ import { MongoDocument } from "@Infrastructure/Mongo/models/mongo-document";
 import { IMongoContext } from "../mongo.context";
 import FactoryMapper from "../mapper/factory-mapper";
 
+import UnitOfWork from "./unit-of-work";
+
 // eslint-disable-next-line max-len
 export default class MongoRepository<TEntity extends BaseEntity, TProps extends BaseEntityProps>
   implements IAsyncRepository<TEntity, TProps> {
@@ -16,7 +18,7 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
   constructor(
     protected readonly context: IMongoContext,
     protected readonly entityFactory: () => TEntity,
-    protected readonly session?: ClientSession,
+    protected readonly uow?: UnitOfWork,
   ) {
     this.mapper = FactoryMapper.createMapper(this.entityFactory());
   }
@@ -28,13 +30,24 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
 
     if (Array.isArray(entities)) {
       const docs = entities.map(this.mapper.toDocument);
-      const inserted = await collection.insertMany(docs, { session: this.session });
+      const inserted = await collection.insertMany(docs);
       return docs.map((doc, i) => this.mapper.fromDocument({ ...doc, _id: inserted.insertedIds[i] }));
     } else {
       const doc = this.mapper.toDocument(entities);
-      const result = await collection.insertOne(doc, { session: this.session });
+      const result = await collection.insertOne(doc);
       return this.mapper.fromDocument({ ...doc, _id: result.insertedId });
     }
+  }
+
+  private async createAsync(entity: TEntity): Promise<void> {
+    const collection = this.getCollection();
+    if (this.uow) {
+      const doc = this.mapper.toDocument(entity);
+      await this.uow.createAsync(doc, collection);
+      return;
+    }
+
+    await collection.insertOne(this.mapper.toDocument(entity));
   }
 
   async getAsync(id: string): Promise<TEntity | null> {
