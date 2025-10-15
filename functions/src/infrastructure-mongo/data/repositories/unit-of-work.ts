@@ -3,27 +3,26 @@ import { IRefreshTokensRepository } from "@Domain/abstractions/repositories/iref
 import { ITasksRepository } from "@Domain/abstractions/repositories/itasks-repository";
 import { IUnitOfWork } from "@Domain/abstractions/repositories/iunit-of-work";
 import { IUsersRepository } from "@Domain/abstractions/repositories/iusers-repository";
-import User, { UserProps } from "@Domain/entities/user.entity";
-import Task, { TaskProps } from "@Domain/entities/task.entity";
 import { ClientSession, Collection, OptionalUnlessRequiredId } from "mongodb";
 import { BaseEntityProps } from "@Domain/entities/base-entity";
 import { MongoDocument } from "@Infrastructure/Mongo/models/mongo-document";
 
 import { IMongoContext } from "../mongo.context";
 
-import MongoRepository from "./mongo.repository";
+import UsersRepository from "./users.repository";
+import TasksRepository from "./tasks.repository";
 
 export default class UnitOfWork implements IUnitOfWork {
   usersRepository: IUsersRepository;
-  tasksRepository!: ITasksRepository;
+  tasksRepository: ITasksRepository;
   labelsRepository!: ILabelsRepository;
   refreshTokensRepository!: IRefreshTokensRepository;
   private session: ClientSession | null = null;
   private affectedRows = 0;
 
   constructor(private readonly mongoContext: IMongoContext) {
-    this.usersRepository = new MongoRepository<User, UserProps>(mongoContext, User.empty, this);
-    this.tasksRepository = new MongoRepository<Task, TaskProps>(mongoContext, Task.empty, this);
+    this.usersRepository = new UsersRepository(mongoContext, this);
+    this.tasksRepository = new TasksRepository(mongoContext, this);
   }
 
   async createManyAsync<TProps extends BaseEntityProps>(
