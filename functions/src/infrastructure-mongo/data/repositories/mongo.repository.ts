@@ -71,7 +71,7 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
     return Array.isArray(entities) ? this.updateManyAsync(entities) : this.updateSingleAsync(entities);
   }
 
-  async updateSingleAsync(entity: TEntity): Promise<void> {
+  private async updateSingleAsync(entity: TEntity): Promise<void> {
     const collection = this.getCollection();
     const filter = { _id: new BSON.ObjectId(entity.id) } as Filter<MongoDocument<TProps>>;
     const doc = this.mapper.toPartialDocument(entity);
@@ -87,7 +87,7 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
     await collection.updateOne(filter, { $set: doc });
   }
 
-  async updateManyAsync(entities: TEntity[]): Promise<void> {
+  private async updateManyAsync(entities: TEntity[]): Promise<void> {
     const collection = this.getCollection();
     const docs = entities.map((entity) => {
       return { _id: new BSON.ObjectId(entity.id), ...this.mapper.toPartialDocument(entity) };
@@ -113,9 +113,41 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
 
   deleteAsync(entity: TEntity): Promise<void>;
   deleteAsync(entities: TEntity[]): Promise<void>;
-  deleteAsync(entities: unknown): Promise<void> {
-    throw new Error("Method not implemented.");
+  deleteAsync(entities: TEntity | TEntity[]): Promise<void> {
+    return Array.isArray(entities) ? this.deleteManyAsync(entities) : this.deleteSingleAsync(entities);
   }
+
+  private async deleteSingleAsync(entity: TEntity): Promise<void> {
+    const collection = this.getCollection();
+    const filter = { _id: new BSON.ObjectId(entity.id) } as Filter<MongoDocument<TProps>>;
+
+    if (this.uow) {
+      await this.uow.attachSession(async (session) => {
+        await collection.deleteOne(filter, { session });
+        return 1;
+      });
+      return;
+    }
+
+    await collection.deleteOne(filter);
+  }
+
+  private async deleteManyAsync(entities: TEntity[]): Promise<void> {
+    const collection = this.getCollection();
+    const ids = entities.map((entity) => new BSON.ObjectId(entity.id));
+    const filter = { _id: { $in: ids } } as Filter<MongoDocument<TProps>>;
+
+    if (this.uow) {
+      await this.uow.attachSession(async (session) => {
+        const result = await collection.deleteMany(filter, { session });
+        return result.deletedCount;
+      });
+      return;
+    }
+
+    await collection.deleteMany(filter);
+  }
+
   getAllAsync(): Promise<TEntity[]> {
     throw new Error("Method not implemented.");
   }
