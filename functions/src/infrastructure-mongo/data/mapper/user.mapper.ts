@@ -2,13 +2,15 @@ import { BSON, OptionalUnlessRequiredId, WithId } from "mongodb";
 import User, { UserProps } from "@Domain/entities/user.entity";
 import BaseMapper from "@Infrastructure/Mongo/abstractions/base-mapper";
 import { MongoDocument } from "@Infrastructure/Mongo/models/mongo-document";
+import Email from "@Domain/value-objects/email";
 
 export default class UserMapper extends BaseMapper<User, UserProps> {
   override toDocument(user: User): OptionalUnlessRequiredId<MongoDocument<UserProps>> {
     return {
       _id: new BSON.ObjectId(),
       displayName: user.displayName,
-      email: user.email,
+      // force type casting since MongoDB does not support custom types
+      email: user.email.toString() as unknown as Email,
       passwordHash: user.passwordHash,
       passwordSalt: user.passwordSalt,
       createdAt: user.createdAt,
@@ -24,7 +26,7 @@ export default class UserMapper extends BaseMapper<User, UserProps> {
     return new User({
       id,
       displayName: doc.displayName,
-      email: doc.email,
+      email: Email.create(doc.email as unknown as string),
       passwordHash: doc.passwordHash,
       passwordSalt: doc.passwordSalt,
       createdAt: doc.createdAt,
