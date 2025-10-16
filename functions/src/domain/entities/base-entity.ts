@@ -8,7 +8,6 @@ export interface IDomainEvent<TPayload = unknown> {
 
 export interface BaseEntityProps {
   id: string;
-  namespace: string;
 }
 
 export default class BaseEntity implements BaseEntityProps {
