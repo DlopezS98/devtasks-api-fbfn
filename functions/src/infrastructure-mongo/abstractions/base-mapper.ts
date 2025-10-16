@@ -7,6 +7,7 @@ export default abstract class BaseMapper<TEntity extends BaseEntity, TProps exte
   abstract toDocument(entity: TEntity): OptionalUnlessRequiredId<MongoDocument<TProps>>;
   abstract fromDocument(doc: OptionalUnlessRequiredId<MongoDocument<TProps>>): TEntity;
   abstract fromDocument(doc: WithId<MongoDocument<TProps>>): TEntity;
+  abstract toPartialDocument(entity: TEntity): Partial<MongoDocument<TProps>>;
 
   protected toDate(date: unknown): Date | null {
     if (date instanceof Date) return date;

@@ -9,6 +9,7 @@ export default class UserMapper extends BaseMapper<User, UserProps> {
     super();
     this.fromDocument = this.fromDocument.bind(this);
     this.toDocument = this.toDocument.bind(this);
+    this.toPartialDocument = this.toPartialDocument.bind(this);
   }
 
   override toDocument(user: User): OptionalUnlessRequiredId<MongoDocument<UserProps>> {
@@ -41,5 +42,19 @@ export default class UserMapper extends BaseMapper<User, UserProps> {
       updatedAt: this.toDate(doc.updatedAt),
       isActive: doc.isActive,
     });
+  }
+
+  toPartialDocument(entity: User): Partial<MongoDocument<UserProps>> {
+    const pUser: Partial<MongoDocument<UserProps>> = {};
+
+    if (entity.displayName !== undefined) pUser.displayName = entity.displayName;
+    if (entity.email !== undefined) pUser.email = entity.email.toString() as unknown as Email;
+    if (entity.passwordHash !== undefined) pUser.passwordHash = entity.passwordHash;
+    if (entity.passwordSalt !== undefined) pUser.passwordSalt = entity.passwordSalt;
+    if (entity.createdAt !== undefined) pUser.createdAt = entity.createdAt;
+    if (entity.updatedAt !== undefined) pUser.updatedAt = entity.updatedAt;
+    if (entity.isActive !== undefined) pUser.isActive = entity.isActive;
+
+    return pUser;
   }
 }
