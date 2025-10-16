@@ -3,7 +3,7 @@ import { IRefreshTokensRepository } from "@Domain/abstractions/repositories/iref
 import { ITasksRepository } from "@Domain/abstractions/repositories/itasks-repository";
 import { IUnitOfWork } from "@Domain/abstractions/repositories/iunit-of-work";
 import { IUsersRepository } from "@Domain/abstractions/repositories/iusers-repository";
-import { ClientSession, Collection, OptionalUnlessRequiredId } from "mongodb";
+import { AnyBulkWriteOperation, ClientSession, Collection, Filter, OptionalUnlessRequiredId, WithId } from "mongodb";
 import { BaseEntityProps } from "@Domain/entities/base-entity";
 import { MongoDocument } from "@Infrastructure/Mongo/models/mongo-document";
 
@@ -58,6 +58,55 @@ export default class UnitOfWork implements IUnitOfWork {
 
       await collection.insertOne(doc, { session: this.session });
       this.affectedRows++;
+    } catch (error) {
+      if (this.session) {
+        await this.session.abortTransaction();
+        await this.dispose();
+      }
+      throw error;
+    }
+  }
+
+  async updateAsync<TProps extends BaseEntityProps>(
+    filter: Filter<MongoDocument<TProps>>,
+    doc: Partial<MongoDocument<TProps>>,
+    collection: Collection<MongoDocument<TProps>>,
+  ): Promise<void> {
+    try {
+      if (!this.session) {
+        this.session = this.mongoContext.client.startSession();
+        this.session.startTransaction();
+      }
+      await collection.updateOne(filter, { $set: doc }, { session: this.session });
+      this.affectedRows++;
+    } catch (error) {
+      if (this.session) {
+        await this.session.abortTransaction();
+        await this.dispose();
+      }
+      throw error;
+    }
+  }
+
+  async updateManyAsync<TProps extends BaseEntityProps>(
+    docs: WithId<Partial<MongoDocument<TProps>>>[],
+    collection: Collection<MongoDocument<TProps>>,
+  ): Promise<void> {
+    try {
+      if (!this.session) {
+        this.session = this.mongoContext.client.startSession();
+        this.session.startTransaction();
+      }
+
+      const operations: AnyBulkWriteOperation<MongoDocument<TProps>>[] = docs.map((doc) => {
+        const { _id: id, ...rest } = doc;
+        const filter = { _id: id } as Filter<MongoDocument<TProps>>;
+        const update = { $set: rest as unknown as Partial<MongoDocument<TProps>> };
+        return { updateOne: { filter, update } };
+      });
+
+      const result = await collection.bulkWrite(operations, { session: this.session });
+      this.affectedRows += result.modifiedCount;
     } catch (error) {
       if (this.session) {
         await this.session.abortTransaction();
