@@ -10,7 +10,6 @@ import FactoryMapper from "../mapper/factory-mapper";
 
 import UnitOfWork from "./unit-of-work";
 
-// eslint-disable-next-line max-len
 export default class MongoRepository<TEntity extends BaseEntity, TProps extends BaseEntityProps>
   implements IAsyncRepository<TEntity, TProps> {
   protected readonly mapper: BaseMapper<TEntity, TProps>;
@@ -26,28 +25,33 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
   async addAsync(entity: TEntity): Promise<TEntity>;
   async addAsync(entities: TEntity[]): Promise<TEntity[]>;
   async addAsync(entities: TEntity | TEntity[]): Promise<TEntity[] | TEntity> {
-    const collection = this.getCollection();
-
-    if (Array.isArray(entities)) {
-      const docs = entities.map(this.mapper.toDocument);
-      const inserted = await collection.insertMany(docs);
-      return docs.map((doc, i) => this.mapper.fromDocument({ ...doc, _id: inserted.insertedIds[i] }));
-    } else {
-      const doc = this.mapper.toDocument(entities);
-      const result = await collection.insertOne(doc);
-      return this.mapper.fromDocument({ ...doc, _id: result.insertedId });
-    }
+    return Array.isArray(entities) ? this.createManyAsync(entities) : this.createAsync(entities);
   }
 
-  private async createAsync(entity: TEntity): Promise<void> {
+  private async createAsync(entity: TEntity): Promise<TEntity> {
     const collection = this.getCollection();
     if (this.uow) {
       const doc = this.mapper.toDocument(entity);
       await this.uow.createAsync(doc, collection);
-      return;
+      return this.mapper.fromDocument(doc);
     }
 
-    await collection.insertOne(this.mapper.toDocument(entity));
+    const doc = this.mapper.toDocument(entity);
+    await collection.insertOne(doc);
+    return this.mapper.fromDocument(doc);
+  }
+
+  private async createManyAsync(entities: TEntity[]): Promise<TEntity[]> {
+    const collection = this.getCollection();
+    if (this.uow) {
+      const docs = entities.map(this.mapper.toDocument);
+      await this.uow.createManyAsync(docs, collection);
+      return docs.map(this.mapper.fromDocument);
+    }
+
+    const docs = entities.map(this.mapper.toDocument);
+    await collection.insertMany(docs);
+    return docs.map(this.mapper.fromDocument);
   }
 
   async getAsync(id: string): Promise<TEntity | null> {
