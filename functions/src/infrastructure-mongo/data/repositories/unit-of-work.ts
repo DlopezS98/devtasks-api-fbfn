@@ -83,6 +83,7 @@ export default class UnitOfWork implements IUnitOfWork {
     return totalAffectedRows;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   withTransaction<T>(_: (uow: IUnitOfWork) => Promise<T>): Promise<T> {
     throw new Error("Method not implemented.");
   }
