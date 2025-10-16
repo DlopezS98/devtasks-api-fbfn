@@ -1,4 +1,4 @@
-import { OptionalUnlessRequiredId, WithId } from "mongodb";
+import { BSON, OptionalUnlessRequiredId, WithId } from "mongodb";
 import User, { UserProps } from "@Domain/entities/user.entity";
 import BaseMapper from "@Infrastructure/Mongo/abstractions/base-mapper";
 import { MongoDocument } from "@Infrastructure/Mongo/models/mongo-document";
@@ -6,6 +6,7 @@ import { MongoDocument } from "@Infrastructure/Mongo/models/mongo-document";
 export default class UserMapper extends BaseMapper<User, UserProps> {
   override toDocument(user: User): OptionalUnlessRequiredId<MongoDocument<UserProps>> {
     return {
+      _id: new BSON.ObjectId(),
       displayName: user.displayName,
       email: user.email,
       passwordHash: user.passwordHash,
