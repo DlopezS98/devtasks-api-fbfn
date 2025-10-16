@@ -148,9 +148,12 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
     await collection.deleteMany(filter);
   }
 
-  getAllAsync(): Promise<TEntity[]> {
-    throw new Error("Method not implemented.");
+  async getAllAsync(): Promise<TEntity[]> {
+    const collection = this.getCollection();
+    const documents = await collection.find().toArray();
+    return documents.map(this.mapper.fromDocument);
   }
+
   queryAsync(query: Query<TProps>): Promise<PagedResult<TEntity>> {
     throw new Error("Method not implemented.");
   }
