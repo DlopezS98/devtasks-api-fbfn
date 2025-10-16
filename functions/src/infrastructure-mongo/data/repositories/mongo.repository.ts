@@ -6,21 +6,17 @@ import BaseMapper from "@Infrastructure/Mongo/abstractions/base-mapper";
 import { MongoDocument } from "@Infrastructure/Mongo/models/mongo-document";
 
 import { IMongoContext } from "../mongo.context";
-import FactoryMapper from "../mapper/factory-mapper";
 
 import UnitOfWork from "./unit-of-work";
 
 export default class MongoRepository<TEntity extends BaseEntity, TProps extends BaseEntityProps>
   implements IAsyncRepository<TEntity, TProps> {
-  protected readonly mapper: BaseMapper<TEntity, TProps>;
-
   constructor(
     protected readonly context: IMongoContext,
     protected readonly entityFactory: () => TEntity,
+    protected readonly mapper: BaseMapper<TEntity, TProps>,
     protected readonly uow?: UnitOfWork,
-  ) {
-    this.mapper = FactoryMapper.createMapper(this.entityFactory());
-  }
+  ) {}
 
   async addAsync(entity: TEntity): Promise<TEntity>;
   async addAsync(entities: TEntity[]): Promise<TEntity[]>;
