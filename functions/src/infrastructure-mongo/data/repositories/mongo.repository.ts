@@ -28,7 +28,10 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
     const collection = this.getCollection();
     if (this.uow) {
       const doc = this.mapper.toDocument(entity);
-      await this.uow.createAsync(doc, collection);
+      await this.uow.attachSession(async (session) => {
+        await collection.insertOne(doc, { session });
+        return 1;
+      });
       return this.mapper.fromDocument(doc);
     }
 
@@ -41,7 +44,10 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
     const collection = this.getCollection();
     if (this.uow) {
       const docs = entities.map(this.mapper.toDocument);
-      await this.uow.createManyAsync(docs, collection);
+      await this.uow.attachSession(async (session) => {
+        await collection.insertMany(docs, { session });
+        return docs.length;
+      });
       return docs.map(this.mapper.fromDocument);
     }
 
@@ -68,13 +74,16 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
   async updateSingleAsync(entity: TEntity): Promise<void> {
     const collection = this.getCollection();
     const filter = { _id: new BSON.ObjectId(entity.id) } as Filter<MongoDocument<TProps>>;
+    const doc = this.mapper.toPartialDocument(entity);
+
     if (this.uow) {
-      const doc = this.mapper.toPartialDocument(entity);
-      await this.uow.updateAsync(filter, doc, collection);
+      await this.uow.attachSession(async (session) => {
+        await collection.updateOne(filter, { $set: doc }, { session });
+        return 1;
+      });
       return;
     }
 
-    const doc = this.mapper.toPartialDocument(entity);
     await collection.updateOne(filter, { $set: doc });
   }
 
@@ -83,10 +92,6 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
     const docs = entities.map((entity) => {
       return { _id: new BSON.ObjectId(entity.id), ...this.mapper.toPartialDocument(entity) };
     }) as WithId<Partial<MongoDocument<TProps>>>[];
-    if (this.uow) {
-      await this.uow.updateManyAsync(docs, collection);
-      return;
-    }
 
     const operations: AnyBulkWriteOperation<MongoDocument<TProps>>[] = docs.map((doc) => {
       const { _id: id, ...rest } = doc;
@@ -94,6 +99,14 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
       const update = { $set: rest as unknown as Partial<MongoDocument<TProps>> };
       return { updateOne: { filter, update } };
     });
+
+    if (this.uow) {
+      await this.uow.attachSession(async (session) => {
+        const result = await collection.bulkWrite(operations, { session });
+        return result.modifiedCount;
+      });
+      return;
+    }
 
     await collection.bulkWrite(operations);
   }
