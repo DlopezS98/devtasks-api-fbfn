@@ -5,6 +5,12 @@ import { MongoDocument } from "@Infrastructure/Mongo/models/mongo-document";
 import Email from "@Domain/value-objects/email";
 
 export default class UserMapper extends BaseMapper<User, UserProps> {
+  constructor() {
+    super();
+    this.fromDocument = this.fromDocument.bind(this);
+    this.toDocument = this.toDocument.bind(this);
+  }
+
   override toDocument(user: User): OptionalUnlessRequiredId<MongoDocument<UserProps>> {
     return {
       _id: new BSON.ObjectId(),
@@ -22,6 +28,8 @@ export default class UserMapper extends BaseMapper<User, UserProps> {
   override fromDocument(doc: WithId<MongoDocument<UserProps>>): User
   override fromDocument(doc: OptionalUnlessRequiredId<MongoDocument<UserProps>>): User {
     const id = !doc._id ? "" : doc._id.toHexString();
+    const createdAt = this.toDate(doc.createdAt);
+    if (!createdAt) throw new Error("Invalid createdAt date");
 
     return new User({
       id,
@@ -29,8 +37,8 @@ export default class UserMapper extends BaseMapper<User, UserProps> {
       email: Email.create(doc.email as unknown as string),
       passwordHash: doc.passwordHash,
       passwordSalt: doc.passwordSalt,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
+      createdAt,
+      updatedAt: this.toDate(doc.updatedAt),
       isActive: doc.isActive,
     });
   }
