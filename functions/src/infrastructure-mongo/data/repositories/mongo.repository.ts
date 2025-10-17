@@ -28,7 +28,7 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
     const collection = this.getCollection();
     if (this.uow) {
       const doc = this.mapper.toDocument(entity);
-      await this.uow.attachSession(async (session) => {
+      await this.uow.executeTransaction(async (session) => {
         await collection.insertOne(doc, { session });
         return 1;
       });
@@ -44,7 +44,7 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
     const collection = this.getCollection();
     if (this.uow) {
       const docs = entities.map(this.mapper.toDocument);
-      await this.uow.attachSession(async (session) => {
+      await this.uow.executeTransaction(async (session) => {
         await collection.insertMany(docs, { session });
         return docs.length;
       });
@@ -77,7 +77,7 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
     const doc = this.mapper.toPartialDocument(entity);
 
     if (this.uow) {
-      await this.uow.attachSession(async (session) => {
+      await this.uow.executeTransaction(async (session) => {
         await collection.updateOne(filter, { $set: doc }, { session });
         return 1;
       });
@@ -101,7 +101,7 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
     });
 
     if (this.uow) {
-      await this.uow.attachSession(async (session) => {
+      await this.uow.executeTransaction(async (session) => {
         const result = await collection.bulkWrite(operations, { session });
         return result.modifiedCount;
       });
@@ -122,7 +122,7 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
     const filter = { _id: new BSON.ObjectId(entity.id) } as Filter<MongoDocument<TProps>>;
 
     if (this.uow) {
-      await this.uow.attachSession(async (session) => {
+      await this.uow.executeTransaction(async (session) => {
         await collection.deleteOne(filter, { session });
         return 1;
       });
@@ -138,7 +138,7 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
     const filter = { _id: { $in: ids } } as Filter<MongoDocument<TProps>>;
 
     if (this.uow) {
-      await this.uow.attachSession(async (session) => {
+      await this.uow.executeTransaction(async (session) => {
         const result = await collection.deleteMany(filter, { session });
         return result.deletedCount;
       });

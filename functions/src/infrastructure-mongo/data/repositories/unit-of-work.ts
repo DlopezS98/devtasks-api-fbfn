@@ -23,16 +23,21 @@ export default class UnitOfWork implements IUnitOfWork {
     this.tasksRepository = new TasksRepository(mongoContext, this);
   }
 
-  async attachSession(
-    execute: (session: ClientSession) => Promise<number>,
-  ): Promise<void> {
+  /**
+   * Executes a series of database operations within a transaction.
+   * @param {Function} operation A function that performs database operations using the provided ClientSession.
+   * It should return a Promise that resolves to the number of affected rows.
+   * @return {Promise<void>} A promise that resolves when the transaction is complete.
+   * @throws An error if the transaction fails, in which case it will be aborted.
+   */
+  async executeTransaction(operation: (session: ClientSession) => Promise<number>): Promise<void> {
     if (!this.session) {
       this.session = this.mongoContext.client.startSession();
       this.session.startTransaction();
     }
 
     try {
-      const operations = await execute(this.session);
+      const operations = await operation(this.session);
       this.affectedRows += operations;
     } catch (error) {
       await this.session.abortTransaction();
