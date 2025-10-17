@@ -1,7 +1,7 @@
-import { AnyBulkWriteOperation, BSON, Collection, Filter, WithId } from "mongodb";
+import { AnyBulkWriteOperation, BSON, Collection, Condition, Filter, FindCursor, Sort, WithId } from "mongodb";
 import { IAsyncRepository } from "@Domain/abstractions/repositories/iasync-repository";
 import BaseEntity, { BaseEntityProps } from "@Domain/entities/base-entity";
-import { Query, PagedResult } from "@Domain/core/query";
+import { Query, PagedResult, FilterDescriptor } from "@Domain/core/query";
 import BaseMapper from "@Infrastructure/Mongo/abstractions/base-mapper";
 import { MongoDocument } from "@Infrastructure/Mongo/models/mongo-document";
 
@@ -154,8 +154,102 @@ export default class MongoRepository<TEntity extends BaseEntity, TProps extends 
     return documents.map(this.mapper.fromDocument);
   }
 
-  queryAsync(query: Query<TProps>): Promise<PagedResult<TEntity>> {
-    throw new Error("Method not implemented.");
+  async queryAsync(query: Query<TProps>): Promise<PagedResult<TEntity>> {
+    const collection = this.getCollection();
+
+    // build the filter once and reuse for both the cursor and the count
+    const filter = this.applyFilters({}, query.filters || []);
+    const cursor = this.applyQueryConstraints(query, filter);
+
+    const [docs, totalCount] = await Promise.all([cursor.toArray(), collection.countDocuments(filter)]);
+
+    return {
+      items: docs.map(this.mapper.fromDocument),
+      skip: query.pagination?.skip ?? 0,
+      take: query.pagination?.take ?? 0,
+      totalCount: totalCount,
+    };
+  }
+
+  protected applyQueryConstraints(
+    query: Query<TProps>,
+    filter: Filter<MongoDocument<TProps>> = {},
+  ): FindCursor<WithId<MongoDocument<TProps>>> {
+    const collection = this.getCollection();
+
+    const mongoSort: Record<string, 1 | -1> = { _id: 1 };
+    if (query.sorts) {
+      for (const sort of query.sorts) {
+        if (sort.field === "id") continue;
+
+        const order = sort.direction === "asc" ? 1 : -1;
+        mongoSort[String(sort.field)] = order;
+      }
+    }
+
+    const cursor = collection.find(filter).sort(mongoSort as Sort);
+    if (query.pagination) {
+      if (query.pagination.skip) cursor.skip(query.pagination.skip);
+      if (query.pagination.take) cursor.limit(query.pagination.take);
+    }
+
+    return cursor;
+  }
+  protected applyFilters<TDocument extends MongoDocument<TProps>, TKey extends keyof MongoDocument<TProps>>(
+    mongoQuery: Filter<MongoDocument<TProps>>,
+    filters: FilterDescriptor<TProps>[],
+  ): Filter<MongoDocument<TProps>> {
+    // helper to assign to mongoQuery while avoiding TypeScript index type issues
+    const setField = (k: TKey, v: Condition<TDocument[TKey]> | TDocument[TKey] | BSON.ObjectId) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (mongoQuery as any)[k] = v;
+    };
+
+    for (const filter of filters) {
+      const isIdBasedFilter = filter.field === "id";
+      const key = (isIdBasedFilter ? "_id" : filter.field) as TKey;
+      const value = (isIdBasedFilter ? new BSON.ObjectId(String(filter.value)) : filter.value) as TDocument[TKey];
+
+      switch (filter.operator) {
+        case "eq":
+          setField(key, value);
+          break;
+        case "ne":
+          setField(key, { $ne: value } as Condition<TDocument[TKey]>);
+          break;
+        case "lt":
+          setField(key, { $lt: value } as Condition<TDocument[TKey]>);
+          break;
+        case "lte":
+          setField(key, { $lte: value } as Condition<TDocument[TKey]>);
+          break;
+        case "gt":
+          setField(key, { $gt: value } as Condition<TDocument[TKey]>);
+          break;
+        case "gte":
+          setField(key, { $gte: value } as Condition<TDocument[TKey]>);
+          break;
+        case "in":
+          if (Array.isArray(filter.value)) {
+            setField(key, { $in: value } as Condition<TDocument[TKey]>);
+          }
+          break;
+        case "nin":
+          if (Array.isArray(filter.value)) {
+            setField(key, { $nin: value } as Condition<TDocument[TKey]>);
+          }
+          break;
+        case "contains":
+          if (typeof filter.value === "string") {
+            setField(key, { $regex: value, $options: "i" } as Condition<TDocument[TKey]>);
+          }
+          break;
+        default:
+          throw new Error(`Unsupported filter operator: ${filter.operator}`);
+      }
+    }
+
+    return mongoQuery;
   }
 
   protected getCollection(): Collection<MongoDocument<TProps>> {
